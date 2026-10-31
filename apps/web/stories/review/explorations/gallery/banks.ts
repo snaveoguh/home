@@ -15,6 +15,7 @@ export type ProposedBrand = {
   radius: RadiusScale;
   density: Density;
   mark: string;
+  markColours: { light: readonly [string, string]; dark: readonly [string, string] };
   wordmark: string;
   imagery: Imagery;
 };
@@ -44,13 +45,53 @@ function svgUrl(svg: string): string {
   return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 }
 
+function paint(body: string, [a, b]: readonly [string, string]): string {
+  return body.replaceAll("{a}", a).replaceAll("{b}", b);
+}
+
 function markSvg(body: string): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28">${body}</svg>`;
 }
 
-function wordmarkSvg(mark: string, word: string, colour: string, family: string, weight: number): string {
+const advance: Record<Typeface, number> = { sans: 0.56, serif: 0.52, rounded: 0.58, mono: 0.6, heavy: 0.62 };
+
+export function wordmarkWidth(word: string, typeface: Typeface): number {
+  return 36 + Math.ceil([...word].length * 17 * advance[typeface]);
+}
+
+function wordmarkSvg(mark: string, word: string, colour: string, typeface: Typeface): string {
   const escaped = word.replace(/&/g, "&amp;");
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 28" width="160" height="28"><g>${mark}</g><text x="36" y="20" fill="${colour}" font-family='${family.replace(/"/g, "")}' font-size="17" font-weight="${weight}" letter-spacing="-0.3">${escaped}</text></svg>`;
+  const width = wordmarkWidth(word, typeface);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} 28" width="${width}" height="28"><g>${mark}</g><text x="36" y="20" fill="${colour}" font-family='${typefaceStacks[typeface].replace(/"/g, "")}' font-size="17" font-weight="${typefaceWeights[typeface]}" letter-spacing="-0.3">${escaped}</text></svg>`;
+}
+
+const logoSlot = { desktop: { height: 28, maxWidth: 160, veryWideHeight: 20 }, mobile: { height: 24, maxWidth: 112 } } as const;
+
+export type LogoClass = "tall" | "square" | "wide" | "very wide";
+
+export function classifyLogo(ratio: number): LogoClass {
+  if (ratio < 0.8) return "tall";
+  if (ratio <= 1.25) return "square";
+  if (ratio <= 4) return "wide";
+  return "very wide";
+}
+
+export function fitLogo(ratio: number, desktop: boolean): { use: "full" | "symbol"; kind: LogoClass; width: number; height: number } {
+  const kind = classifyLogo(ratio);
+  if (!desktop && kind === "very wide") return { use: "symbol", kind, width: logoSlot.mobile.height, height: logoSlot.mobile.height };
+  const box = desktop ? logoSlot.desktop : logoSlot.mobile;
+  let height: number = kind === "very wide" && desktop ? logoSlot.desktop.veryWideHeight : box.height;
+  let width = height * ratio;
+  if (width > box.maxWidth) {
+    width = box.maxWidth;
+    height = width / ratio;
+  }
+  return { use: "full", kind, width: Math.round(width), height: Math.round(height) };
+}
+
+export function markContrast(bank: ExampleBank): { light: number; dark: number } {
+  const { markColours, light, dark } = bank.proposed;
+  return { light: contrastRatio(markColours.light[0], light.backgroundColor), dark: contrastRatio(markColours.dark[0], dark.backgroundColor) };
 }
 
 export const exampleBanks: readonly ExampleBank[] = [
@@ -65,7 +106,8 @@ export const exampleBanks: readonly ExampleBank[] = [
       typeface: "sans",
       radius: "soft",
       density: "standard",
-      mark: "<rect width='28' height='28' rx='7' fill='#0f6b42'/><path d='M6 18c4-8 12-8 16 0' stroke='#f6f1e6' stroke-width='2.4' fill='none' stroke-linecap='round'/><circle cx='6' cy='18' r='2.4' fill='#f6f1e6'/><circle cx='22' cy='18' r='2.4' fill='#f6f1e6'/>",
+      mark: "<rect width='28' height='28' rx='7' fill='{a}'/><path d='M6 18c4-8 12-8 16 0' stroke='{b}' stroke-width='2.4' fill='none' stroke-linecap='round'/><circle cx='6' cy='18' r='2.4' fill='{b}'/><circle cx='22' cy='18' r='2.4' fill='{b}'/>",
+      markColours: { light: ["#0f6b42", "#f6f1e6"], dark: ["#52c48a", "#0f1914"] },
       wordmark: "Lagoon Line",
       imagery: "route",
     },
@@ -81,7 +123,8 @@ export const exampleBanks: readonly ExampleBank[] = [
       typeface: "rounded",
       radius: "round",
       density: "roomy",
-      mark: "<rect width='28' height='28' rx='14' fill='#5b2ee6'/><rect x='8' y='9' width='12' height='12' rx='6' fill='#c8f560'/>",
+      mark: "<rect width='28' height='28' rx='14' fill='{a}'/><rect x='8' y='9' width='12' height='12' rx='6' fill='{b}'/>",
+      markColours: { light: ["#5b2ee6", "#c8f560"], dark: ["#b39dff", "#c8f560"] },
       wordmark: "Pocketful",
       imagery: "jar",
     },
@@ -97,7 +140,8 @@ export const exampleBanks: readonly ExampleBank[] = [
       typeface: "mono",
       radius: "square",
       density: "standard",
-      mark: "<rect width='28' height='28' fill='#1d5c63'/><g fill='#f2f3f1'><rect x='5' y='5' width='4' height='4'/><rect x='12' y='5' width='4' height='4'/><rect x='19' y='5' width='4' height='4'/><rect x='5' y='12' width='4' height='4'/><rect x='12' y='12' width='4' height='4'/><rect x='5' y='19' width='4' height='4'/></g><g fill='none' stroke='#f2f3f1' stroke-width='1'><rect x='19.5' y='12.5' width='3' height='3'/><rect x='12.5' y='19.5' width='3' height='3'/><rect x='19.5' y='19.5' width='3' height='3'/></g>",
+      mark: "<rect width='28' height='28' fill='{a}'/><g fill='{b}'><rect x='5' y='5' width='4' height='4'/><rect x='12' y='5' width='4' height='4'/><rect x='19' y='5' width='4' height='4'/><rect x='5' y='12' width='4' height='4'/><rect x='12' y='12' width='4' height='4'/><rect x='5' y='19' width='4' height='4'/></g><g fill='none' stroke='{b}' stroke-width='1'><rect x='19.5' y='12.5' width='3' height='3'/><rect x='12.5' y='19.5' width='3' height='3'/><rect x='19.5' y='19.5' width='3' height='3'/></g>",
+      markColours: { light: ["#1d5c63", "#f2f3f1"], dark: ["#7cc6cc", "#101415"] },
       wordmark: "Tallyhouse",
       imagery: "quorum",
     },
@@ -113,7 +157,8 @@ export const exampleBanks: readonly ExampleBank[] = [
       typeface: "serif",
       radius: "square",
       density: "roomy",
-      mark: "<rect width='28' height='28' fill='#0b0b0c'/><rect x='2.5' y='2.5' width='23' height='23' fill='none' stroke='#c9a24a' stroke-width='0.8'/><text x='14' y='19.5' text-anchor='middle' fill='#c9a24a' font-family='Charter, Bitstream Charter, Georgia, serif' font-size='15'>A</text>",
+      mark: "<rect width='28' height='28' fill='{a}'/><rect x='2.5' y='2.5' width='23' height='23' fill='none' stroke='{b}' stroke-width='0.8'/><text x='14' y='19.5' text-anchor='middle' fill='{b}' font-family='Charter, Bitstream Charter, Georgia, serif' font-size='15'>A</text>",
+      markColours: { light: ["#0b0b0c", "#c9a24a"], dark: ["#c9a24a", "#0b0b0c"] },
       wordmark: "Ashcombe",
       imagery: "monogram",
     },
@@ -129,7 +174,8 @@ export const exampleBanks: readonly ExampleBank[] = [
       typeface: "heavy",
       radius: "round",
       density: "roomy",
-      mark: "<rect width='28' height='28' rx='9' fill='#c8005e' transform='rotate(-8 14 14)'/><path d='M8 19l3-10 3 7 3-7 3 10' stroke='#fff35c' stroke-width='2.6' fill='none' stroke-linejoin='round' stroke-linecap='round'/>",
+      mark: "<rect width='28' height='28' rx='9' fill='{a}' transform='rotate(-8 14 14)'/><path d='M8 19l3-10 3 7 3-7 3 10' stroke='{b}' stroke-width='2.6' fill='none' stroke-linejoin='round' stroke-linecap='round'/>",
+      markColours: { light: ["#c8005e", "#fff35c"], dark: ["#ff5aa5", "#1b0f3a"] },
       wordmark: "Moshpit",
       imagery: "stickers",
     },
@@ -200,7 +246,7 @@ export function todayCss(bank: ExampleBank): string {
 }
 
 export function proposedTokens(bank: ExampleBank): SchemeTokens {
-  const { typeface, radius, density, mark, wordmark, light } = bank.proposed;
+  const { typeface, radius, density, mark, markColours, wordmark, light } = bank.proposed;
   const family = typefaceStacks[typeface];
   const weight = typefaceWeights[typeface];
   const lightInk = deriveScheme(light)["--foreground"]!;
@@ -210,27 +256,35 @@ export function proposedTokens(bank: ExampleBank): SchemeTokens {
     "--font-display": family,
     "--font-display-weight": String(weight),
     "--font-display-tracking": typefaceTracking[typeface],
-    "--brand-mark": svgUrl(markSvg(mark)),
-    "--brand-wordmark": svgUrl(wordmarkSvg(mark, wordmark, lightInk, family, weight)),
+    "--brand-mark": svgUrl(markSvg(paint(mark, markColours.light))),
+    "--brand-wordmark": svgUrl(wordmarkSvg(paint(mark, markColours.light), wordmark, lightInk, typeface)),
   };
 }
 
 export function proposedCss(bank: ExampleBank): string {
-  const { light, dark, mark, wordmark, typeface } = bank.proposed;
+  const { light, dark, mark, markColours, wordmark, typeface } = bank.proposed;
   const darkInk = deriveScheme(dark)["--foreground"]!;
   const shared = proposedTokens(bank);
-  const darkWordmark = svgUrl(wordmarkSvg(mark, wordmark, darkInk, typefaceStacks[typeface], typefaceWeights[typeface]));
+  const darkMark = svgUrl(markSvg(paint(mark, markColours.dark)));
+  const darkWordmark = svgUrl(wordmarkSvg(paint(mark, markColours.dark), wordmark, darkInk, typeface));
+  const desktop = fitLogo(wordmarkWidth(wordmark, typeface) / 28, true);
+  const mobile = fitLogo(wordmarkWidth(wordmark, typeface) / 28, false);
+  const mobileWordmark = mobile.use === "full"
+    ? [`@media (width < 768px){[data-home-mark]:not([class*=compact]){width:${mobile.width}px !important;min-width:${mobile.width}px !important}[data-home-mark]:not([class*=compact])>:is(a,button){background-image:var(--brand-wordmark) !important;background-size:${mobile.width}px ${mobile.height}px !important;width:${mobile.width}px !important}}`]
+    : [];
   const consumers = [
     "body{background-color:var(--muted) !important}",
     "h1,h2,[data-slot=card-title]{font-family:var(--font-display);font-weight:var(--font-display-weight);letter-spacing:var(--font-display-tracking)}",
     "[aria-label=\"Total balance\"] .text-4xl{font-family:var(--font-display);font-weight:var(--font-display-weight);letter-spacing:var(--font-display-tracking)}",
     "[data-home-mark]>:is(a,button){background:var(--brand-mark) left center/28px 28px no-repeat !important}",
-    "[data-home-mark]:not([class*=compact])>:is(a,button){background-image:var(--brand-wordmark) !important;background-size:auto 28px !important;width:160px !important}",
+    "@media (width < 768px){[data-home-mark]>:is(a,button){background-size:24px 24px !important}}",
+    `@media (width >= 768px){[data-home-mark]:not([class*=compact])>:is(a,button){background-image:var(--brand-wordmark) !important;background-size:${desktop.width}px ${desktop.height}px !important;width:${desktop.width}px !important}}`,
+    ...mobileWordmark,
     "[data-home-mark]>:is(a,button)>*{visibility:hidden}",
   ];
   return [
     `:root{${declarations(shared)};${declarations(deriveScheme(light))}}`,
-    `:root.dark{${declarations(deriveScheme(dark))};--brand-wordmark:${darkWordmark}}`,
+    `:root.dark{${declarations(deriveScheme(dark))};--brand-mark:${darkMark};--brand-wordmark:${darkWordmark}}`,
     ...consumers,
   ].join("\n");
 }
@@ -247,7 +301,12 @@ export function proposedSettingsShape(bank: ExampleBank) {
     typeface,
     radius,
     density,
-    logo: { mark: `${bank.id}-mark.svg`, wordmark: `${bank.id}-wordmark.svg` },
+    logo: {
+      mark: { light: `${bank.id}-mark-light.svg`, dark: `${bank.id}-mark-dark.svg` },
+      wordmark: { light: `${bank.id}-wordmark-light.svg`, dark: `${bank.id}-wordmark-dark.svg` },
+      desktop: fitLogo(wordmarkWidth(bank.proposed.wordmark, typeface) / 28, true),
+      mobile: fitLogo(wordmarkWidth(bank.proposed.wordmark, typeface) / 28, false),
+    },
     landingImage: imagery,
   };
 }

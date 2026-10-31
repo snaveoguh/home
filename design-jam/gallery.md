@@ -51,12 +51,12 @@ In order of how much it hurts:
 1. **Dark mode drops the brand.** The theme CSS is scoped to `:root:not(.dark)`. In dark, all five banks are Home: same blue button, same grey. See `sheet-390-today-dark.png`. Ashcombe, a black-and-gold bank, cannot exist.
 2. **The background is almost always white.** `boundLightBackground` mixes the page colour toward white until the fixed muted text `#737373` reaches 4.5:1. `#737373` is only 4.74:1 on pure white, so any real tint fails. Lagoon Line's cream `#f6f1e6` becomes `#fbf9f4`. Ashcombe's black `#0b0b0c` becomes `#fafafa`. The rule protects muted text by moving the background. It should move the muted text instead.
 3. **On the signed-in home, the background only paints the header.** Cards use `--card` and the canvas uses `--muted`. The brand sets neither, so cards stay white and the canvas stays neutral grey under a tinted header (`lagoon-line-home-390-light-today.png`).
-4. **No logo slot.** The header mark is Home's blue square, hard-coded as `--mark-blue: #002ef4` in `components/home-mark.module.css`. It does not even follow `--primary`. The display name only shows up in the mark's `aria-label` ("Lagoon Line home") and the page `<title>`. On the landing page, a customer of any bank sees a blue square and a "Sign in" button.
+4. **No logo slot.** The header mark is Home's blue square, hard-coded as `--mark-blue: #002ef4` in `components/home-mark.module.css`. It does not even follow `--primary`. The display name only shows up in the mark's `aria-label` ("Lagoon Line home") and the page `<title>`. On the landing page, a customer of any bank sees a blue square and a "Sign in" button. The fix is mark's operator logo rules (`design-jam/mark.md` on `design/mark`): a fixed slot, shape classes, clear space, light and dark files, 3:1 contrast. The prototype here follows them.
 5. **The primary clamp turns light brand colours brown.** Gold `#c9a24a` comes out as `#876d32`, and pink as raspberry. For text on light this is right, so keep it. The fix is a dark pair, not a weaker clamp: gold looks like gold on black.
 6. **Type.** One system sans for every bank. A private bank wants a serif headline, a treasury wants mono figures, a teen app wants something rounder. The balance figure is the loudest thing on Home, and it cannot change.
 7. **Radius.** `--radius: 0.25rem` drives the whole scale (`--radius-sm` to `--radius-2xl` are `calc()` of it), but operators cannot touch it. Square for Tallyhouse and Ashcombe, round for Pocketful and Moshpit, is half of what makes each one look like itself.
 8. **Density.** Tailwind v4's `--spacing` drives every `p-*`, `gap-*` and `size-*`. Home is already at the compact floor: `size-11` is exactly the 44px touch target. So density can only go up. Roomy is `0.28125rem` (1.125x, 49.5px targets). A "compact" option would break hit targets, so it is not offered.
-9. **Imagery.** `LandingShell` already takes a `landingVisual` prop, but `app/page.tsx` always passes the globe, and its dots are Home blue. A remittance app wants its route, a treasury its signers.
+9. **Imagery.** `LandingShell` already takes a `landingVisual` prop, but `app/page.tsx` always passes the globe, and on main its dots are Home blue. `design/globe` now makes the globe read `--primary`, so with that branch the default image matches the brand for free. A remittance app still wants its route, a treasury its signers, so the slot stays.
 10. **Copy (not a token, but the gap you notice next).** The landing headline "One home for your money." and its subline are hard-coded in `SignedOutLanding`. `description` is stored but only used in `<meta>`. Every bank shows Home's pitch.
 
 What should stay fixed, and did in the prototype: cash green, investments purple, gain and loss, status colours, payout-partner colours. They carry meaning, so they should not be brandable.
@@ -83,8 +83,20 @@ What they write:
 | typeface | `--font-display`, `--font-display-weight`, `--font-display-tracking` | used by h1, h2, card titles and the balance figure only; body text stays system sans |
 | radius | `--radius` | square 0.0625rem, soft 0.375rem, round 0.875rem |
 | density | `--spacing` | standard 0.25rem, roomy 0.28125rem |
-| logo | `--brand-mark`, `--brand-wordmark` | 28px square, 28px-tall wordmark; compact slots (mobile header, desktop rail) use the mark |
+| logo | `--brand-mark`, `--brand-wordmark`, each with a Light and a Dark version | sized by `fitLogo`, a port of mark's `fit()`: see the table below |
 | landingImage | `landingVisual` prop | one image, drawn in the scheme's own tokens |
+
+Logo sizing follows mark's slot rules. Desktop: 28px tall, max 160px wide, and very wide logos (over 4:1) at 20px tall. Mobile: 24px tall, max 112px wide, and very wide logos swap to the square symbol. The compact slots (signed-in mobile header and desktop rail) always use the symbol, so the page title never enters the logo's clear space. Each mark has a Light and a Dark version; the main colour is checked at 3:1 against the bank's own header.
+
+| Bank | Wordmark class | Desktop | Mobile landing | Symbol on Light header | Symbol on Dark header |
+| --- | --- | --- | --- | --- | --- |
+| Lagoon Line | very wide | 101 by 20 | symbol, 24 by 24 | 5.8:1 | 8.2:1 |
+| Pocketful | very wide | 89 by 20 | symbol, 24 by 24 | 6.2:1 | 8.0:1 |
+| Tallyhouse | very wide | 99 by 20 | symbol, 24 by 24 | 6.8:1 | 9.5:1 |
+| Ashcombe Private | wide | 107 by 28 | 92 by 24 | 18.1:1 | 8.2:1 |
+| Moshpit | wide | 110 by 28 | 94 by 24 | 5.0:1 | 6.2:1 |
+
+The first version used one mark for both modes. Four of the five failed 3:1 in Dark: Ashcombe's black tile vanished on its black header. Each bank now has a dark mark. Ashcombe's inverts to a gold tile with a black A. The wordmark viewBox is now sized to the text, not padded to 160px, per mark's file rules. The mock wordmarks still use live system text; real files must outline it.
 
 The rule change is in `deriveScheme`. It works in both light and dark from one colour pair:
 
@@ -100,8 +112,9 @@ Result: five banks that look like five banks in both modes, with every text pair
 1. **Ship tokens, not colours.** The operator setting stays small: two colour pairs (light and dark), a typeface from a list of five, three radii, two densities, a mark, a wordmark and one landing image. Everything else is derived, so an operator cannot produce a broken screen.
 2. **Derive the whole surface scale from the background, in both modes.** Replace `boundLightBackground` with a rule that moves text, not the page. Scope the output to `:root` and `.dark`, not `:root:not(.dark)`.
 3. **Make semantic colour off-limits.** Money meaning (gain, loss, cash, investments, status) is Home's, not the operator's. Write that into the schema, not a style guide.
-4. **Give the logo a real slot with rules.** `HomeMark` renders the operator's mark when one is set, and Home's own mark is the fallback. mark's rules on `design/mark` are the place to set sizes, clear space and contrast.
-5. **Copy is next.** Show `description` as the landing subline before adding any headline field.
+4. **Give the logo a real slot with mark's rules.** `HomeMark` renders the operator's logo when one is set, and Home's Doorway mark is the fallback. Adopt mark's operator logo rules from `design-jam/mark.md` on `design/mark` as the validation contract: SVG only, a Light and a Dark file plus a square symbol, sizing by `fit()`, 25% clear space, 3:1 against the header, no recolouring and no animation. The five banks here pass them.
+5. **Keep motion Home's.** Motion is part of how Home feels trustworthy, so it is not an operator setting. Every bank uses motion's money tokens (`fade` 150, `arrive` 240, `tick` 280, `confirm` 320, `roll` 360, 4px travel) unchanged. A roomy bank and a dense one should both settle in under 400ms.
+6. **Copy is next.** Show `description` as the landing subline before adding any headline field.
 
 Order: 2 and the dark pair first (biggest visible gain, no new UI), then radius and typeface (one token each), then logo, then imagery and density.
 
@@ -116,14 +129,17 @@ Order: 2 and the dark pair first (biggest visible gain, no new UI), then radius 
 
 ## For the others
 
-- **mark:** your dark-mode finding (brand blue at 2.3:1 on the dark header) shows up here too. For a themed operator, the mark is the only Home blue left on screen. The logo slot here reads `--brand-mark` and `--brand-wordmark`. If your rules define sizes and clear space, I will use them.
-- **globe:** the globe's dots are fixed Home blue. If they read `--primary`, every operator's landing page would match its brand for free. Any themed landing (`level: today`) here shows the clash.
+- **mark:** your rules held up on five more logos. One gap: rule "3:1 against white and `#171717`" assumes Home's headers. With a themed background, check against the operator's own header colour (`markContrast` in `banks.ts` does that).
+- **globe:** thanks for reading `--primary`. With your branch merged, the `today` landing shots here would lose their blue-dot clash.
 - **review:** at 390 in the Home composition, "Add money" wraps to two lines in the actions row, in every bank and in plain Home too. Also worth a row: the brand background reaches the header but not cards or the canvas.
 - **motion:** your tokens are durations and easings only, so they would theme cleanly. Nothing here changes them.
 
 ## Borrowed from
 
-Final pass pending, after the other four push.
+- **mark** (`design/mark`, 8d79cef): the operator logo rules. `fitLogo` and `classifyLogo` in `banks.ts` are a port of `fit()` from `design-jam/shots/mark/src/operators.mjs`. The rules drove Light and Dark mark versions per bank, the 3:1 check, tight wordmark viewBoxes, 20px very-wide wordmarks, and the symbol swap on mobile. The proposal now points at the rules as the validation contract, with the Doorway mark as the fallback.
+- **motion** (`design/motion`, d7221ae): the money motion tokens, as proposal item 5. Motion stays fixed across brands. No code borrowed, because the banks show no motion.
+- **globe** (`design/globe`, d84fdf8): the globe now follows `--primary`. It is used in limit 9 and the proposal. Not merged here, so the `today` shots still show main's blue globe.
+- **review** (`design/review`, 32d1aaa): nothing borrowed into code. Their 44px tap-target work is consistent with the density finding (Home sits at the 44px floor, so density only goes up).
 
 ## Shots
 
@@ -134,7 +150,8 @@ Final pass pending, after the other four push.
 
 ## Checks
 
-Run in `/home/user/home-gallery` after `bun install --frozen-lockfile` (833 packages, lockfile unchanged):
+Run in `/home/user/home-gallery` after the borrowing pass, with `bun install --frozen-lockfile` reporting no changes:
 
 - `DATABASE_URL="" bun lint`: pass (exit 0, oxlint with `--deny-warnings`, 0 errors, 0 warnings). The first run flagged two errors in my files (`home(exploration-story-tag)` and `jsx-a11y(alt-text)`), both fixed.
-- `bun typecheck`: pass (exit 0). The first run hit a Node heap abort because the shared machine was short of memory. It passed with `NODE_OPTIONS=--max-old-space-size=6144`, and no code changed between runs.
+- `bun typecheck`: pass (exit 0, `next typegen && tsc --noEmit`), run with `NODE_OPTIONS=--max-old-space-size=6144`. On the first pass the default heap aborted because five sessions were sharing the machine.
+- Final check-in: fetched all four branches (review 32d1aaa, mark 8d79cef, motion d7221ae, globe d84fdf8) and read every notes file.
