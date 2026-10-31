@@ -1,0 +1,164 @@
+.root {
+  --money-motion-fade: 150ms;
+  --money-motion-arrive: 240ms;
+  --money-motion-tick: 280ms;
+  --money-motion-confirm: 320ms;
+  --money-motion-roll: 360ms;
+  --money-motion-hold: 1600ms;
+  --money-motion-stagger: 60ms;
+  --money-motion-travel: 4px;
+  --money-ease-enter: var(--motion-ease-enter);
+  --money-ease-exit: var(--motion-ease-exit);
+  --money-ease-standard: var(--motion-ease-standard);
+  --money-ease-settle: var(--motion-ease-emphasized);
+  display: contents;
+}
+
+.arriving {
+  position: relative;
+  isolation: isolate;
+  animation: arrive-fade var(--money-motion-arrive) var(--money-ease-enter) both;
+}
+
+.arriving > * {
+  animation: arrive-lift var(--money-motion-arrive) var(--money-ease-enter) both;
+}
+
+.arriving::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  background: var(--muted);
+  pointer-events: none;
+  z-index: -1;
+  animation: arrive-wash calc(var(--money-motion-arrive) + var(--money-motion-hold)) var(--money-ease-standard) both;
+}
+
+@supports (interpolate-size: allow-keywords) {
+  .arriving {
+    interpolate-size: allow-keywords;
+    overflow: clip;
+    animation-name: arrive-open;
+  }
+}
+
+@keyframes arrive-fade {
+  from { opacity: 0; }
+}
+
+@keyframes arrive-open {
+  from { block-size: 0; opacity: 0; }
+}
+
+@keyframes arrive-lift {
+  from { transform: translateY(calc(var(--money-motion-travel) * -1)); }
+}
+
+@keyframes arrive-wash {
+  0%, 20% { opacity: .7; }
+  100% { opacity: 0; }
+}
+
+.bubble {
+  animation: bubble-in var(--money-motion-confirm) var(--money-ease-settle) both;
+}
+
+.checkRing {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw calc(var(--money-motion-confirm) * .6) var(--money-ease-settle) both;
+}
+
+.checkTick {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw calc(var(--money-motion-confirm) * .5) var(--money-ease-settle) calc(var(--money-motion-confirm) * .5) both;
+}
+
+.spinnerOut {
+  animation: fade-out var(--money-motion-fade) var(--money-ease-exit) both;
+}
+
+@keyframes bubble-in {
+  from { transform: scale(.94); }
+}
+
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes fade-out {
+  to { opacity: 0; }
+}
+
+.titleIn {
+  animation: title-in var(--money-motion-arrive) var(--money-ease-enter) calc(var(--money-motion-confirm) * .4) both;
+}
+
+@keyframes title-in {
+  from { opacity: 0; transform: translateY(var(--money-motion-travel)); }
+}
+
+.delta {
+  animation: delta-life calc(var(--money-motion-arrive) + var(--money-motion-hold) + var(--money-motion-fade)) linear both;
+}
+
+@keyframes delta-life {
+  0% { opacity: 0; transform: translateY(var(--money-motion-travel)); animation-timing-function: var(--money-ease-enter); }
+  12% { opacity: 1; transform: none; }
+  92% { opacity: 1; animation-timing-function: var(--money-ease-exit); }
+  100% { opacity: 0; }
+}
+
+.reduced .arriving,
+.reduced .arriving > *,
+.reduced .bubble,
+.reduced .titleIn {
+  animation: arrive-fade var(--money-motion-fade) linear both;
+}
+
+.reduced .arriving::after {
+  animation: none;
+  opacity: 0;
+}
+
+.reduced .checkRing,
+.reduced .checkTick {
+  animation: none;
+  stroke-dashoffset: 0;
+}
+
+.reduced .delta {
+  animation: delta-life-reduced calc(var(--money-motion-hold) + var(--money-motion-fade) * 2) linear both;
+}
+
+@keyframes delta-life-reduced {
+  0% { opacity: 0; }
+  8%, 92% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arriving,
+  .arriving > *,
+  .bubble,
+  .titleIn {
+    animation: arrive-fade var(--money-motion-fade) linear both;
+  }
+
+  .arriving::after {
+    animation: none;
+    opacity: 0;
+  }
+
+  .checkRing,
+  .checkTick {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .delta {
+    animation-name: delta-life-reduced;
+  }
+}
