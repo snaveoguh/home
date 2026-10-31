@@ -180,6 +180,7 @@ function HeaderAccountAction({
   if (status === "verified" || (status === "unavailable" && isSignedIn)) {
     return <Button className="h-11" onClick={onDashboard}>Dashboard</Button>;
   }
+  if (routeMode === "landing") return null;
   return <Button className="h-11" onClick={(event) => onSignIn(event.currentTarget)}>Sign in</Button>;
 }
 

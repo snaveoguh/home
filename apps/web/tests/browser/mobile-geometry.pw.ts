@@ -335,7 +335,7 @@ test("header targets stay large while content controls keep fine-pointer density
   async function openRepresentativeControls(targetPage: Page) {
     await installApiFixtures(targetPage);
     await targetPage.goto("/");
-    const signIn = targetPage.getByRole("banner").getByRole("button", { name: "Sign in" });
+    const signIn = targetPage.getByRole("main").getByRole("button", { name: "Sign in" });
     await expect(signIn).toBeVisible();
     const signInHeight = await signIn.evaluate((element) => element.getBoundingClientRect().height);
 

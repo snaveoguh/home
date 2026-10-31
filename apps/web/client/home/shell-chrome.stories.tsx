@@ -90,3 +90,11 @@ export const SignedOutWithoutRail: Story = {
     await expect(within(canvasElement).getByRole("button", { name: "Home" })).toBeVisible();
   },
 };
+
+export const LandingLeavesSignInToHero: Story = {
+  args: { routeMode: "landing", isVerified: false, account: statusAccount("signed-out", false) },
+  play: async ({ canvasElement }) => {
+    const banner = within(canvasElement).getByRole("banner");
+    await expect(within(banner).queryByRole("button", { name: "Sign in" })).toBeNull();
+  },
+};
