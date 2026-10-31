@@ -73,7 +73,7 @@ Run on the first Monday of each month against the last 30 days of factory merges
 4. Resting states. For every disclosure, toggle and tab, check that its resting state looks at rest. `aria-expanded` or `aria-pressed` on a control that is "open" by default is the pattern that broke the rail toggle.
 5. Status textures. Look at each surface in loading, Can't load, failed and empty states (stories first). No loading prose, no bare dash placeholder, no "Unavailable" on its own, and at most one loud texture per surface.
 6. Colour. Count the colour on each screen. Gain green only for money in and price change; Base blue only for the one primary action.
-7. Token drift. Grep for `duration-[0-9]`, `text-\[`, `rounded-none` on controls and `transition-all`. The count should only go down.
+7. Token drift. Grep for `duration-[0-9]`, `text-\[`, `rounded-none` on controls and `transition-all`. The count should only go down. Lint already blocks raw spinners, local number formatting and real waits in stories (`home/no-raw-style-utilities`, `home/no-local-formatting`, `home/no-real-waits`; list from the motion session).
 8. Type. Spot-check against the five spec roles (Amount, Heading, Body, Label, Metadata). No uppercase, no off-scale sizes.
 9. Wrapping. Check 320 px and 200% text for breaks inside dates, amounts and names.
 10. Write it up. One table like the one above, the top three fixed in one PR, and the rest filed against the area's debt issue (per `docs/work-sizing.md`).
@@ -103,3 +103,4 @@ Run on the first Monday of each month against the last 30 days of factory merges
 ## Borrowed from
 
 - motion: I point the checklist's token-drift step and the "For the others" note at their duration and easing table in `components/explorations/money-motion/tokens.ts` instead of proposing new values.
+- motion: their list of the lint rules that catch design-lane code (`home/no-real-waits`, `home/no-local-formatting`, `home/no-raw-style-utilities`) goes in checklist step 7 as a quick pre-check before a design PR.
