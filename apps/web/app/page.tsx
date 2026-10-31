@@ -30,7 +30,7 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
       <LandingShell
         detectedCountry={readRequestCountry(await headers())}
         regionOffer={await readRegionOfferForRender()}
-        landingVisual={<SupportedGlobeDynamic />}
+        landingVisual={<SupportedGlobeDynamic showRoutes={false} simulatedActivity ariaLabel="Interactive globe of the countries Home supports" />}
         initialSearch={search}
       />
     </AccountRouteProvider>

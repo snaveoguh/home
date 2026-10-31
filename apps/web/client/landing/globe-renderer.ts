@@ -1,4 +1,5 @@
 import land from "./globe-land-points.json";
+import landCountries from "./globe-land-countries.json";
 import { clampViewLatitude, geographicVector, INITIAL_LONGITUDE, INITIAL_VIEW_LATITUDE } from "./globe-geometry";
 import { advanceMotion, boundedVelocity, DEFAULT_VELOCITY, wrapLongitude } from "./globe-motion";
 
@@ -30,32 +31,40 @@ void main() {
 
 const pointVertex = `
 attribute vec3 aPosition;
+attribute float aState;
 uniform float uLongitude;
 uniform float uTilt;
 uniform float uSize;
+uniform float uLitMix;
+uniform float uActiveMix;
 varying float vDepth;
+varying float vLit;
 void main() {
+  vLit = min(aState, 1.) * uLitMix + max(aState - 1., 0.) * uActiveMix * .55;
   float x = cos(uLongitude) * aPosition.x - sin(uLongitude) * aPosition.z;
   float z = sin(uLongitude) * aPosition.x + cos(uLongitude) * aPosition.z;
   float y = cos(uTilt) * aPosition.y - sin(uTilt) * z;
   vDepth = sin(uTilt) * aPosition.y + cos(uTilt) * z;
   gl_Position = vec4(x * .88, y * .88, 0., 1.);
-  gl_PointSize = uSize;
+  gl_PointSize = uSize * (1. + max(aState - 1., 0.) * uActiveMix * .3);
 }`;
 
 const pointFragment = `
 precision mediump float;
 varying float vDepth;
+varying float vLit;
 uniform vec3 uLand;
+uniform vec3 uLit;
 void main() {
   if (vDepth <= .025) discard;
   float radius = length(gl_PointCoord - .5);
-  float alpha = (1. - smoothstep(.28, .5, radius)) * (.32 + .38 * vDepth);
-  gl_FragColor = vec4(uLand, alpha);
+  float alpha = (1. - smoothstep(.28, .5, radius)) * (.32 + .38 * vDepth) * (1. + vLit * .55);
+  gl_FragColor = vec4(mix(uLand, uLit, min(1., vLit * .7 + max(vLit - 1., 0.))), min(1., alpha));
 }`;
 
 export type GlobeRenderer = {
   setMotion: (playing: boolean) => void;
+  setHighlight: (litCountryCodes: ReadonlySet<string>, activeCountryCode: string | null, animate: boolean) => void;
   rotate: (longitudeDegrees: number, latitudeDegrees?: number) => void;
   dispose: () => void;
 };
@@ -89,6 +98,10 @@ export function createGlobeRenderer(
   let presentedLatitude = INITIAL_VIEW_LATITUDE;
   let lastTime = 0;
   let dirty = false;
+  let litMix = 0;
+  let activeMix = 0;
+  let litTween: Tween = { from: 0, to: 0, start: 0, duration: 0 };
+  let activeTween: Tween = { from: 0, to: 0, start: 0, duration: 0 };
   let longitudeVelocity = DEFAULT_VELOCITY;
   let latitudeVelocity = 0;
   let drag: { id: number; startX: number; startY: number; x: number; y: number; time: number; active: boolean } | null = null;
@@ -152,7 +165,7 @@ export function createGlobeRenderer(
 
   let draw: () => void;
   function requestFrame() {
-    if (!frame && !disposed && visible && !document.hidden && (dirty || (playing && !drag))) {
+    if (!frame && !disposed && visible && !document.hidden && (dirty || tweening() || (playing && !drag))) {
       frame = requestAnimationFrame(tick);
     }
   }
@@ -171,9 +184,15 @@ export function createGlobeRenderer(
       }
       lastTime = time;
       dirty = false;
+      litMix = sampleTween(litTween, time);
+      activeMix = sampleTween(activeTween, time);
       draw();
     }
     requestFrame();
+  }
+
+  function tweening() {
+    return litMix !== litTween.to || activeMix !== activeTween.to;
   }
 
   function syncMotion() {
@@ -273,8 +292,15 @@ export function createGlobeRenderer(
       positions.set(geographicVector(land[i], land[i + 1]), i / 2 * 3);
     }
     const points = buffer(positions);
+    const states = new Float32Array(positions.length / 3);
+    const stateCodes = Array.from(states, (_, index) => landCountries.slice(index * 2, index * 2 + 2));
+    const stateBuffer = buffer(states);
     const spherePosition = gl.getAttribLocation(sphere, "aPosition");
     const pointPosition = gl.getAttribLocation(dots, "aPosition");
+    const pointState = gl.getAttribLocation(dots, "aState");
+    const litUniform = gl.getUniformLocation(dots, "uLit");
+    const litMixUniform = gl.getUniformLocation(dots, "uLitMix");
+    const activeMixUniform = gl.getUniformLocation(dots, "uActiveMix");
     const pixelsUniform = gl.getUniformLocation(sphere, "uPixels");
     const shadeUniform = gl.getUniformLocation(sphere, "uShade");
     const lightUniform = gl.getUniformLocation(sphere, "uLight");
@@ -288,7 +314,8 @@ export function createGlobeRenderer(
     gl.clearColor(0, 0, 0, 0);
 
     function setColor(uniform: WebGLUniformLocation | null, token: string, style: CSSStyleDeclaration) {
-      const color = style.getPropertyValue(token).trim();
+      const raw = style.getPropertyValue(token).trim();
+      const color = /^#[\da-f]{3}$/i.test(raw) ? `#${raw[1]}${raw[1]}${raw[2]}${raw[2]}${raw[3]}${raw[3]}` : raw;
       if (!/^#[\da-f]{6}$/i.test(color)) return;
       const value = Number.parseInt(color.slice(1), 16);
       gl!.uniform3f(uniform, (value >> 16 & 255) / 255, (value >> 8 & 255) / 255, (value & 255) / 255);
@@ -313,13 +340,22 @@ export function createGlobeRenderer(
       gl.bindBuffer(gl.ARRAY_BUFFER, points);
       gl.enableVertexAttribArray(pointPosition);
       gl.vertexAttribPointer(pointPosition, 3, gl.FLOAT, false, 0, 0);
-      if (style) setColor(landUniform, "--globe-land", style);
+      gl.bindBuffer(gl.ARRAY_BUFFER, stateBuffer);
+      gl.enableVertexAttribArray(pointState);
+      gl.vertexAttribPointer(pointState, 1, gl.FLOAT, false, 0, 0);
+      if (style) {
+        setColor(landUniform, "--globe-land", style);
+        setColor(litUniform, "--globe-route", style);
+      }
+      gl.uniform1f(litMixUniform, litMix);
+      gl.uniform1f(activeMixUniform, activeMix);
       paletteDirty = false;
       gl.uniform1f(longitudeUniform, longitude * Math.PI / 180);
       gl.uniform1f(tiltUniform, latitude * Math.PI / 180);
       gl.uniform1f(sizeUniform, Math.max(1.5, canvas.width * .0038));
       gl.drawArrays(gl.POINTS, 0, positions.length / 3);
       gl.disableVertexAttribArray(pointPosition);
+      gl.disableVertexAttribArray(pointState);
       presentedLongitude = longitude;
       presentedLatitude = latitude;
       onFrame(longitude, latitude, performance.now());
@@ -358,6 +394,35 @@ export function createGlobeRenderer(
         }
         syncMotion();
       },
+      setHighlight(litCountryCodes, activeCountryCode, animate) {
+        if (disposed) return;
+        let changed = false;
+        let lit = false;
+        for (let index = 0; index < states.length; index++) {
+          const code = stateCodes[index];
+          const state = code === activeCountryCode ? 2 : litCountryCodes.has(code) ? 1 : 0;
+          if (state === 1) lit = true;
+          if (states[index] !== state) {
+            states[index] = state;
+            changed = true;
+          }
+        }
+        if (changed) {
+          gl.bindBuffer(gl.ARRAY_BUFFER, stateBuffer);
+          gl.bufferSubData(gl.ARRAY_BUFFER, 0, states);
+        }
+        const now = performance.now();
+        const litTarget = lit || activeCountryCode ? 1 : 0;
+        if (litTween.to !== litTarget) litTween = startTween(litMix, litTarget, now, animate ? LIT_REVEAL_MS : 0);
+        if (activeCountryCode) activeTween = startTween(0, 1, now, animate ? ACTIVE_MS : 0);
+        else activeTween = startTween(activeMix, 0, now, 0);
+        if (!animate) {
+          litMix = litTween.to;
+          activeMix = activeTween.to;
+        }
+        dirty = true;
+        requestFrame();
+      },
       rotate(longitudeDegrees, latitudeDegrees = 0) {
         if (disposed) return;
         endDrag(false);
@@ -372,4 +437,20 @@ export function createGlobeRenderer(
     dispose();
     throw error;
   }
+}
+
+const LIT_REVEAL_MS = 400;
+const ACTIVE_MS = 240;
+
+type Tween = { from: number; to: number; start: number; duration: number };
+
+function startTween(from: number, to: number, start: number, duration: number): Tween {
+  return { from, to, start, duration };
+}
+
+function sampleTween({ from, to, start, duration }: Tween, time: number) {
+  if (duration <= 0 || time >= start + duration) return to;
+  const progress = Math.max(0, (time - start) / duration);
+  const eased = 1 - Math.pow(1 - progress, 3);
+  return from + (to - from) * eased;
 }

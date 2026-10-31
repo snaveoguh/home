@@ -26,6 +26,7 @@ import {
   type GlobeMarkerTone,
   type GlobePopoverSelection,
 } from "./globe-geometry";
+import { ACTIVITY_SLOTS, groupActivityPoints, simulatedActivityAt } from "./globe-activity";
 import type { GlobeRenderer } from "./globe-renderer";
 import styles from "./supported-globe.module.css";
 
@@ -39,7 +40,15 @@ export type SupportedGlobeProps = {
   description?: string;
   interactiveMarkerTones?: readonly GlobeMarkerTone[];
   interactiveCountryCodes?: readonly string[];
+  simulatedActivity?: boolean;
 };
+
+type PingNodes = {
+  ring: SVGCircleElement | null;
+  dot: SVGCircleElement | null;
+};
+
+const pingSlots = Array.from({ length: ACTIVITY_SLOTS }, (_, slot) => slot);
 
 type RouteNodes = {
   path: SVGPathElement | null;
@@ -69,6 +78,7 @@ export function SupportedGlobe({
   description,
   interactiveMarkerTones,
   interactiveCountryCodes,
+  simulatedActivity = false,
 }: SupportedGlobeProps) {
   const descriptionId = useId();
   const motionId = useId();
@@ -77,6 +87,8 @@ export function SupportedGlobe({
   const markerRefs = useRef(new Map<string, SVGCircleElement>());
   const countryButtonRefs = useRef(new Map<string, HTMLButtonElement>());
   const routeRefs = useRef(new Map<string, RouteNodes>());
+  const pingRefs = useRef(new Map<number, PingNodes>());
+  const hoverCountryRef = useRef<string | null>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<GlobeRenderer | null>(null);
   const motionRef = useRef(false);
@@ -90,6 +102,11 @@ export function SupportedGlobe({
       : points;
   }, [interactiveCountryCodes, interactiveMarkerTones, points]);
   const routes = useMemo(() => showRoutes ? configureGlobeRoutes(points) : [], [points, showRoutes]);
+  const litCountryCodes = useMemo(() => new Set(points.filter((point) => !point.markerTone).map((point) => point.countryCode)), [points]);
+  const activityGroups = useMemo(
+    () => simulatedActivity ? groupActivityPoints(points.filter((point) => !point.markerTone)) : [],
+    [points, simulatedActivity],
+  );
   const initialPopover = useMemo(
     () => selectGlobePopoverCountry(interactivePoints, INITIAL_LONGITUDE),
     [interactivePoints],
@@ -97,6 +114,7 @@ export function SupportedGlobe({
   const pointsRef = useRef(points);
   const interactivePointsRef = useRef(interactivePoints);
   const routesRef = useRef(routes);
+  const activityGroupsRef = useRef(activityGroups);
   const activeCountryRef = useRef<string | null>(null);
   const selectedCountryRef = useRef(initialPopover?.country.countryCode ?? null);
   const selectedAtRef = useRef(0);
@@ -109,11 +127,15 @@ export function SupportedGlobe({
   const requestedPlaying = shouldAnimateGlobe(reducedMotion, userPlaying);
   const playing = requestedPlaying && activeCountryCode === null;
   const selectedCountry = selectedPopover?.country ?? null;
+  const expandedOffer = selectedCountry?.offer && activeCountryCode === selectedCountry.countryCode
+    ? { ...selectedCountry.offer, currencyName: selectedCountry.currency.name }
+    : null;
 
   useEffect(() => {
     pointsRef.current = points;
     interactivePointsRef.current = interactivePoints;
     routesRef.current = routes;
+    activityGroupsRef.current = activityGroups;
     const activePoint = activeCountryRef.current
       ? interactivePoints.find((point) => point.countryCode === activeCountryRef.current)
       : undefined;
@@ -124,7 +146,7 @@ export function SupportedGlobe({
     selectedAtRef.current = performance.now();
     setSelectedPopover(selection);
     if (!activePoint) setRovingCountryCode(selection?.country.countryCode ?? interactivePoints[0]?.countryCode ?? null);
-  }, [interactivePoints, points, routes]);
+  }, [activityGroups, interactivePoints, points, routes]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -196,6 +218,26 @@ export function SupportedGlobe({
           );
         }
       }
+      const pings = motionRef.current ? simulatedActivityAt(frameTime, activityGroupsRef.current) : [];
+      for (const slot of pingSlots) {
+        const nodes = pingRefs.current.get(slot);
+        const ping = pings.find((candidate) => candidate.slot === slot);
+        const position = ping ? projectCountry(ping.point.longitude, ping.point.latitude, longitude, latitude) : null;
+        if (!ping || !position?.visible) {
+          nodes?.ring?.setAttribute("opacity", "0");
+          nodes?.dot?.setAttribute("opacity", "0");
+          continue;
+        }
+        const eased = 1 - Math.pow(1 - ping.progress, 3);
+        const fade = Math.min(1, position.depth * 2.4);
+        nodes?.ring?.setAttribute("cx", position.x.toFixed(2));
+        nodes?.ring?.setAttribute("cy", position.y.toFixed(2));
+        nodes?.ring?.setAttribute("r", (0.6 + eased * 3).toFixed(2));
+        nodes?.ring?.setAttribute("opacity", (0.6 * (1 - ping.progress) * fade).toFixed(2));
+        nodes?.dot?.setAttribute("cx", position.x.toFixed(2));
+        nodes?.dot?.setAttribute("cy", position.y.toFixed(2));
+        nodes?.dot?.setAttribute("opacity", (Math.min(1, (1 - ping.progress) * 2) * fade).toFixed(2));
+      }
       const activePoint = activeCountryRef.current
         ? pointsRef.current.find((point) => point.countryCode === activeCountryRef.current)
         : undefined;
@@ -258,6 +300,11 @@ export function SupportedGlobe({
     rendererRef.current?.setMotion(status === "ready" && playing);
   }, [status, playing]);
 
+  useEffect(() => {
+    if (status !== "ready") return;
+    rendererRef.current?.setHighlight(litCountryCodes, activeCountryCode, !reducedMotion);
+  }, [status, litCountryCodes, activeCountryCode, reducedMotion]);
+
   function activateCountry(point: GlobePoint) {
     activeCountryRef.current = point.countryCode;
     setActiveCountryCode(point.countryCode);
@@ -269,6 +316,7 @@ export function SupportedGlobe({
   }
 
   function clearActiveCountry() {
+    hoverCountryRef.current = null;
     if (!activeCountryRef.current) return;
     activeCountryRef.current = null;
     setActiveCountryCode(null);
@@ -345,6 +393,22 @@ export function SupportedGlobe({
             </g>;
           })}
         </svg>
+        {simulatedActivity ? (
+          <svg className={styles.activity} viewBox="0 0 100 100" aria-hidden="true">
+            {pingSlots.map((slot) => <g key={slot}>
+              <circle ref={(node) => {
+                const current = pingRefs.current.get(slot) ?? { ring: null, dot: null };
+                current.ring = node;
+                pingRefs.current.set(slot, current);
+              }} className={styles.pingRing} cx="50" cy="50" r=".6" opacity="0" />
+              <circle ref={(node) => {
+                const current = pingRefs.current.get(slot) ?? { ring: null, dot: null };
+                current.dot = node;
+                pingRefs.current.set(slot, current);
+              }} className={styles.pingDot} cx="50" cy="50" r=".62" opacity="0" />
+            </g>)}
+          </svg>
+        ) : null}
         <svg className={styles.markers} viewBox="0 0 100 100" aria-hidden="true">
           {points.map((point) => {
             const position = projectCountry(point.longitude, point.latitude);
@@ -379,7 +443,18 @@ export function SupportedGlobe({
               aria-hidden={status === "ready" ? undefined : true}
               aria-label={`${point.countryName}, ${currency}. ${point.detail ?? (showRoutes ? "Highlight illustrative connections." : "Show coverage details.")}`}
               onPointerDown={(event) => event.stopPropagation()}
-              onClick={() => activateCountry(point)}
+              onPointerEnter={(event) => {
+                if (event.pointerType !== "mouse" || activeCountryRef.current === point.countryCode) return;
+                hoverCountryRef.current = point.countryCode;
+                activateCountry(point);
+              }}
+              onPointerLeave={(event) => {
+                if (event.pointerType === "mouse" && hoverCountryRef.current === point.countryCode && document.activeElement !== event.currentTarget) clearActiveCountry();
+              }}
+              onClick={() => {
+                hoverCountryRef.current = null;
+                activateCountry(point);
+              }}
               onFocus={() => activateCountry(point)}
               onKeyDown={(event) => {
                 if (event.key === "ArrowUp" || event.key === "ArrowDown") {
@@ -399,6 +474,7 @@ export function SupportedGlobe({
           <div
             ref={popoverRef}
             className={styles.popover}
+            data-expanded={expandedOffer ? "true" : "false"}
             style={popoverStyle(selectedPopover?.position ?? null)}
           >
             <span className={styles.flag} aria-hidden="true">
@@ -411,13 +487,22 @@ export function SupportedGlobe({
                 {selectedCountry.currency.code && selectedCountry.currency.name !== selectedCountry.currency.code ? ` · ${selectedCountry.currency.name}` : ""}
                 {selectedCountry.detail ? ` · ${selectedCountry.detail}` : ""}
               </small>
+              {expandedOffer ? (
+                <span className={styles.offer}>
+                  <span>Balances shown in {expandedOffer.currencySymbol ?? expandedOffer.currencyName}</span>
+                  {expandedOffer.asset ? <span>{expandedOffer.asset} on Base{expandedOffer.assetStatus ? ` · ${expandedOffer.assetStatus}` : ""}</span> : null}
+                </span>
+              ) : null}
             </span>
           </div>
         ) : null}
       </div>
+      {simulatedActivity && !reducedMotion ? (
+        <figcaption className={styles.caption}>Pings are simulated, not live activity.</figcaption>
+      ) : null}
       <div className={styles.srOnly}>
         <p id={descriptionId}>
-          {description ?? `${countries.length} country and currency profiles${showRoutes ? " connected by a small illustrative route set" : " shown as sourced inventory points"}.`}
+          {description ?? `${countries.length} country and currency profiles${showRoutes ? " connected by a small illustrative route set" : ", each highlighted on the globe"}.${simulatedActivity ? " Animated pings are simulated and do not show real activity." : ""}`}
           {status === "ready" && ` Mouse dragging rotates and tilts the globe; one-finger horizontal gestures rotate it while vertical gestures scroll the page and two-finger pinch zoom remains available. ${reducedMotion ? "Automatic motion remains paused by your reduced-motion preference;" : "Space pauses or resumes rotation;"} arrow keys rotate and tilt when the globe is focused. Tab to a country point; Up and Down arrows move between visible country points.`}
         </p>
         <p id={motionId} role="status">

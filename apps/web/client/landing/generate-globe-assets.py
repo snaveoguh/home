@@ -59,6 +59,38 @@ for feature in sorted(countries["features"], key=lambda f: priority.get(f["prope
     code = p["ISO_A2_EH"]
     if len(code) == 2 and code not in positions:
         positions[code] = [round(p["LABEL_X"], 5), round(p["LABEL_Y"], 5)]
+country_shapes = []
+for feature in countries["features"]:
+    code = feature["properties"]["ISO_A2_EH"]
+    geometry = feature["geometry"]
+    if len(code) != 2 or not geometry:
+        continue
+    parts = geometry["coordinates"] if geometry["type"] == "MultiPolygon" else [geometry["coordinates"]]
+    for rings in parts:
+        outer = rings[0]
+        bounds = (min(p[0] for p in outer), min(p[1] for p in outer), max(p[0] for p in outer), max(p[1] for p in outer))
+        country_shapes.append((code, bounds, rings))
+
+
+def country_at(x, y):
+    for code, (left, bottom, right, top), rings in country_shapes:
+        if left <= x <= right and bottom <= y <= top and in_ring(x, y, rings[0]):
+            if not any(in_ring(x, y, hole) for hole in rings[1:]):
+                return code
+    return None
+
+
+land_countries = []
+for i in range(0, len(points), 2):
+    lon, lat = points[i], points[i + 1]
+    code = country_at(lon, lat)
+    for dx, dy in ((0.6, 0), (-0.6, 0), (0, 0.6), (0, -0.6)):
+        if code:
+            break
+        code = country_at(lon + dx, lat + dy)
+    land_countries.append(code or "--")
+(ROOT / "globe-land-countries.json").write_text(json.dumps("".join(land_countries)) + "\n")
+
 (ROOT / "globe-country-coordinates.json").write_text(json.dumps(dict(sorted(positions.items())), indent=2) + "\n")
 
 svg = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">',
@@ -75,4 +107,5 @@ for index, path in enumerate(paths):
     svg.append(f'<path opacity="{.36 + index * .076:.3f}" d="{"".join(path)}"/>')
 svg.extend(['</g>', '</svg>'])
 (ROOT / "globe-static.svg").write_text("".join(svg) + "\n")
-print(f"Generated {len(points) // 2} land dots and {len(positions)} country coordinates.")
+assigned = sum(code != "--" for code in land_countries)
+print(f"Generated {len(points) // 2} land dots ({assigned} with a country) and {len(positions)} country coordinates.")

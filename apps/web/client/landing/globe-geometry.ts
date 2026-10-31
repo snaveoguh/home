@@ -3,12 +3,19 @@ import { presentationRegions, regionIds } from "@/config/regions";
 
 export type GlobeMarkerTone = "positive" | "caution" | "negative" | "neutral";
 
+export type GlobeOffer = {
+  currencySymbol: string | null;
+  asset: string | null;
+  assetStatus: string | null;
+};
+
 export type GlobeCountry = {
   countryCode: string;
   countryName: string;
   currency: { code: string | null; name: string };
   detail?: string;
   markerTone?: GlobeMarkerTone;
+  offer?: GlobeOffer;
 };
 
 export type GlobePoint = GlobeCountry & {
@@ -47,7 +54,17 @@ const illustrativeRouteSpecs = [
 export function configuredGlobeCountries(): GlobeCountry[] {
   return regionIds.flatMap((id) => {
     const region = presentationRegions[id];
-    return region.countryCode ? [region as GlobeCountry] : [];
+    if (!region.countryCode) return [];
+    return [{
+      countryCode: region.countryCode,
+      countryName: region.countryName,
+      currency: { code: region.currency.code, name: region.currency.name },
+      offer: {
+        currencySymbol: region.currency.symbol,
+        asset: region.candidateAsset?.symbol ?? null,
+        assetStatus: region.candidateAsset?.verificationStatus ?? null,
+      },
+    }];
   });
 }
 
