@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -5,6 +6,8 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { SectionHeader } from "@/components/section-header";
+import { StatusMark } from "@/components/ui/status-texture";
+import { ShimmerRows } from "@/client/home/panel-shared";
 import type { InvestAsset } from "@/config/invest-assets";
 import type { AssetMarkResolution } from "@/client/asset-mark/presentation";
 import type { MarketDataState } from "@/shared/invest/invest-market";
@@ -42,7 +45,8 @@ export function DiscoverShelf({
             ariaLevel={headingLevel}
             action={
               <Button variant="ghost" size="card-action" onClick={onSeeAll}>
-                See all ›
+                See all
+                <ChevronRight data-icon="inline-end" aria-hidden="true" />
               </Button>
             }
           />
@@ -60,10 +64,18 @@ export function DiscoverShelf({
                 />
               ))}
             </ul>
-          ) : (
-            <p className="px-3 py-2 text-sm text-muted-foreground">
-              {shelfStatusLabel(status)}
+          ) : status === "loading" ? (
+            <div role="status">
+              <ShimmerRows count={3} />
+              <span className="sr-only">Loading {title.toLowerCase()}</span>
+            </div>
+          ) : status === "error" || status === "unavailable" ? (
+            <p className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground">
+              <StatusMark texture="cant-load" />
+              Can’t load {title.toLowerCase()} right now
             </p>
+          ) : (
+            <p className="px-3 py-2 text-sm text-muted-foreground">Nothing trending</p>
           )}
         </CardContent>
       </Card>
@@ -71,8 +83,3 @@ export function DiscoverShelf({
   );
 }
 
-function shelfStatusLabel(status: MemeShelfStatus) {
-  if (status === "loading") return "Loading";
-  if (status === "error" || status === "unavailable") return "Unavailable";
-  return "None trending";
-}

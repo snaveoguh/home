@@ -257,7 +257,7 @@ export function PrimaryNavigation({
           </nav>
           <div className="mt-auto">
             <div className="px-2.5 pb-2">
-              <Button variant="navigation" size="icon" className="size-11" aria-label="Sidebar" aria-expanded={!collapsed} aria-controls="desktop-rail" data-breakpoint-peer="sidebar-toggle" data-breakpoint-fallback="nav-home" onClick={toggle}>
+              <Button variant="rail-toggle" size="icon" className="size-11" aria-label="Sidebar" aria-expanded={!collapsed} aria-controls="desktop-rail" data-breakpoint-peer="sidebar-toggle" data-breakpoint-fallback="nav-home" onClick={toggle}>
                 <ToggleIcon className="size-5 rtl:-scale-x-100" aria-hidden="true" />
               </Button>
             </div>

@@ -52,7 +52,7 @@ test("switching away from nested Invest and back opens the Invest overview", asy
   const navigation = page.getByRole("navigation", { name: "Main navigation" });
   await navigation.getByRole("button", { name: "Invest", exact: true }).click();
   await expectNavigation(page, /\/invest$/);
-  await page.getByRole("region", { name: "Crypto" }).getByRole("button", { name: "See all ›" }).click();
+  await page.getByRole("region", { name: "Crypto" }).getByRole("button", { name: "See all" }).click();
   await expectNavigation(page, /\/invest\/crypto$/);
   await expect(page.locator("[data-shell-header-title]").first()).toHaveText("Crypto");
 
@@ -64,7 +64,7 @@ test("switching away from nested Invest and back opens the Invest overview", asy
   await expect(page.getByRole("button", { name: "Back to Invest" })).toHaveCount(0);
   await expect(page.getByRole("region", { name: "Crypto" })).toBeVisible();
 
-  await page.getByRole("region", { name: "Crypto" }).getByRole("button", { name: "See all ›" }).click();
+  await page.getByRole("region", { name: "Crypto" }).getByRole("button", { name: "See all" }).click();
   await navigation.getByRole("button", { name: "Home", exact: true }).click();
   await page.getByRole("region", { name: "Your money" })
     .getByRole("button", { name: /^Investments/ }).click();
@@ -83,7 +83,7 @@ test("tapping active Invest from a category pushes a root entry that Back restor
     .getByRole("button", { name: "Invest", exact: true });
   await investTab.click();
   await expectNavigation(page, /\/invest$/);
-  await page.getByRole("region", { name: "Crypto" }).getByRole("button", { name: "See all ›" }).click();
+  await page.getByRole("region", { name: "Crypto" }).getByRole("button", { name: "See all" }).click();
   await expectNavigation(page, /\/invest\/crypto$/);
   await investTab.click();
   await expectNavigation(page, /\/invest$/);
@@ -109,7 +109,7 @@ test("tapping active Invest from a crypto asset preserves category Back after br
   const investTab = page.getByRole("navigation", { name: "Main navigation" })
     .getByRole("button", { name: "Invest", exact: true });
   await investTab.click();
-  await page.getByRole("region", { name: "Crypto" }).getByRole("button", { name: "See all ›" }).click();
+  await page.getByRole("region", { name: "Crypto" }).getByRole("button", { name: "See all" }).click();
   await expectNavigation(page, /\/invest\/crypto$/);
   await page.getByRole("button", { name: /Bitcoin/ }).click();
   await expectNavigation(page, /\/invest\/cbbtc$/);
@@ -201,7 +201,7 @@ test("desktop rail keeps routing, collapse state, and money dialog focus across 
   await invest.click();
   await expectNavigation(page, /\/invest$/);
   await expect(invest).toHaveAttribute("aria-current", "page");
-  await page.getByRole("region", { name: "Crypto" }).getByRole("button", { name: "See all ›" }).click();
+  await page.getByRole("region", { name: "Crypto" }).getByRole("button", { name: "See all" }).click();
   await expectNavigation(page, /\/invest\/crypto$/);
   await page.goBack();
   await expectNavigation(page, /\/invest$/);

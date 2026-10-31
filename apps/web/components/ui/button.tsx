@@ -23,6 +23,8 @@ const buttonVariantStyles = cva(
         "floating-control": "relative rounded-full text-foreground transition-[scale] motion-reduce:transition-none hover:bg-state-hover hover:text-foreground active:bg-state-pressed aria-expanded:bg-state-pressed aria-expanded:text-foreground focus-visible:ring-inset",
         navigation:
           "rounded-none text-muted-foreground transition-none motion-reduce:transition-none hover:bg-state-hover hover:text-foreground active:bg-state-pressed active:text-foreground aria-expanded:bg-state-pressed aria-expanded:text-foreground aria-[current=page]:text-foreground",
+        "rail-toggle":
+          "rounded-lg text-muted-foreground transition-none motion-reduce:transition-none hover:bg-state-hover hover:text-foreground active:bg-state-pressed active:text-foreground",
       },
       size: {
         default:
@@ -48,7 +50,7 @@ const buttonVariantStyles = cva(
         "balance-segment": "h-auto min-h-0 rounded-sm p-0",
         "balance-legend": "h-auto min-h-0 rounded-sm p-0",
         "card-action":
-          "-mr-2 h-auto min-h-7 gap-1 rounded-lg pt-0.5 pr-2 pb-1.5 pl-2.5 [&_svg:not([class*='size-'])]:size-3.5",
+          "relative -me-2 h-8 gap-0.5 rounded-lg ps-2.5 pe-1.5 before:absolute before:inset-x-0 before:-inset-y-1.5 before:content-[''] [&_svg:not([class*='size-'])]:size-4",
       },
       press: {
         standard: "active:scale-[0.97] motion-reduce:active:scale-none",
@@ -83,6 +85,7 @@ const iconPressSizes = new Set<ButtonSize>([
 const stillPressVariants = new Set<ButtonVariant>([
   "link",
   "navigation",
+  "rail-toggle",
   "balance-segment",
   "balance-legend",
 ]);

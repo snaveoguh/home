@@ -60,6 +60,8 @@ Dark drops or deepens shadows because a black shadow on the darker page reads as
 
 Neutral controls (Button `outline`, `ghost`, `navigation` and `floating-control`, Item rows that are links or buttons, Toggle and Toggle Group, Select and Combobox items) draw every state from one contract. Filled variants (`default`, `secondary`, `destructive`) keep their own tone steps.
 
+The desktop rail's Sidebar toggle uses `rail-toggle`: the neutral hover and pressed states without the Selected fill, because expanded is its resting state and a permanent fill reads as stuck.
+
 | State | Treatment | Light | Dark |
 | --- | --- | --- | --- |
 | Hover / highlight | `bg-state-hover` with foreground text; a menu's keyboard highlight matches pointer hover | foreground 5% | foreground 7% |
