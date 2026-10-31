@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { formatFiatAmount } from "@/shared/formatting";
 import { RollingAmount } from "./rolling-amount";
 import { moneyMotionStyles as styles } from "./motion-scope";
 
-const signedUsd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", signDisplay: "exceptZero" });
+function signedUsd(delta: number) {
+  return formatFiatAmount(BigInt(Math.round(delta * 100)), 2, "USD", { currencyNative: true, sign: "always" });
+}
 
 export function BalanceUpdate({ value, label = "Total balance" }: { value: number; label?: string }) {
   const [shown, setShown] = useState({ value, delta: 0, change: 0 });
@@ -18,7 +21,7 @@ export function BalanceUpdate({ value, label = "Total balance" }: { value: numbe
       <p className="h-5 text-sm text-muted-foreground" aria-live="polite">
         {shown.change > 0 ? (
           <span key={shown.change} className={`inline-block ${styles.delta}`}>
-            {signedUsd.format(shown.delta)}
+            {signedUsd(shown.delta)}
           </span>
         ) : null}
       </p>

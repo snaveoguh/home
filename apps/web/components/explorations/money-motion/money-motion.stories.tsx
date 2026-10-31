@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { ArrowDown, ArrowUp } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { expect, userEvent, within } from "storybook/test";
 import { ActivityRow } from "@/components/finance-rows";
 import { Button } from "@/components/ui/button";
@@ -66,17 +66,7 @@ function MoneyArrivingDemo() {
 }
 
 function SendConfirmingDemo() {
-  const [run, setRun] = useState(0);
   const [state, setState] = useState<"pending" | "confirmed">("pending");
-  useEffect(() => {
-    if (run === 0) return;
-    const timer = setTimeout(() => setState("confirmed"), 900);
-    return () => clearTimeout(timer);
-  }, [run]);
-  const replay = () => {
-    setState("pending");
-    setRun(run + 1);
-  };
   return (
     <Frame title="Send confirming" note="Simulated. The spinner hands off to a drawn check once Base confirms.">
       <div className="flex flex-col items-center gap-8 py-4">
@@ -92,20 +82,21 @@ function SendConfirmingDemo() {
             <StatusStep status={state === "confirmed" ? "complete" : "current"} title="Confirming on Base" />
           </StatusSteps>
         </div>
-        <Button variant="outline" size="sm" onClick={replay}>{run === 0 ? "Send $25.00" : "Replay"}</Button>
+        <Button variant="outline" size="sm" onClick={() => setState(state === "pending" ? "confirmed" : "pending")}>
+          {state === "pending" ? "Simulate confirmation" : "Back to pending"}
+        </Button>
       </div>
     </Frame>
   );
 }
 
 function SavingsEarningDemo() {
-  const [startedAt] = useState(() => Date.now());
   return (
     <Frame title="Savings earning" note="Simulated 4.10% APY on $4,812.30. One quiet tick a second, paused when the tab is hidden.">
       <div className="flex flex-col gap-1">
         <p className="text-sm text-muted-foreground">Earned this month</p>
         <p className="text-2xl font-semibold">
-          <AccruingAmount principal={4812.3} apy={0.041} earnedBefore={12.408261} startedAt={startedAt} />
+          <AccruingAmount principal={4812.3} apy={0.041} earnedBefore={12.408261} />
         </p>
         <p className="text-sm text-muted-foreground">Save balance $4,812.30</p>
       </div>
@@ -173,7 +164,7 @@ const meta = {
   decorators: [
     (Story, { args }) => (
       <MoneyMotionScope mode={(args as Args).motion}>
-        <div className="flex min-h-screen flex-wrap items-start justify-center gap-6 bg-background p-4 text-foreground sm:p-8">
+        <div className="mx-auto grid min-h-screen max-w-3xl content-start justify-items-center gap-6 bg-background p-4 text-foreground sm:p-8 md:grid-cols-2">
           <Story />
         </div>
       </MoneyMotionScope>
