@@ -224,10 +224,14 @@ export function SupportedGlobe({
         const ping = pings.find((candidate) => candidate.slot === slot);
         const position = ping ? projectCountry(ping.point.longitude, ping.point.latitude, longitude, latitude) : null;
         if (!ping || !position?.visible) {
-          nodes?.ring?.setAttribute("opacity", "0");
-          nodes?.dot?.setAttribute("opacity", "0");
+          if (nodes?.ring?.getAttribute("visibility") !== "hidden") {
+            nodes?.ring?.setAttribute("visibility", "hidden");
+            nodes?.dot?.setAttribute("visibility", "hidden");
+          }
           continue;
         }
+        nodes?.ring?.setAttribute("visibility", "visible");
+        nodes?.dot?.setAttribute("visibility", "visible");
         const eased = 1 - Math.pow(1 - ping.progress, 3);
         const fade = Math.min(1, position.depth * 2.4);
         nodes?.ring?.setAttribute("cx", position.x.toFixed(2));
@@ -400,12 +404,12 @@ export function SupportedGlobe({
                 const current = pingRefs.current.get(slot) ?? { ring: null, dot: null };
                 current.ring = node;
                 pingRefs.current.set(slot, current);
-              }} className={styles.pingRing} cx="50" cy="50" r=".6" opacity="0" />
+              }} className={styles.pingRing} cx="50" cy="50" r=".6" visibility="hidden" />
               <circle ref={(node) => {
                 const current = pingRefs.current.get(slot) ?? { ring: null, dot: null };
                 current.dot = node;
                 pingRefs.current.set(slot, current);
-              }} className={styles.pingDot} cx="50" cy="50" r=".62" opacity="0" />
+              }} className={styles.pingDot} cx="50" cy="50" r=".62" visibility="hidden" />
             </g>)}
           </svg>
         ) : null}

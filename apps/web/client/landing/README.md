@@ -2,7 +2,7 @@
 
 A scoped, static-first landing centerpiece. It owns only the globe, its interaction
 and screen-reader description—not a hero, country setting, auth, navigation, or
-product eligibility. There is no widget dropdown, country readout or visible motion
+product eligibility. There is no widget dropdown or visible motion
 button. The root header remains the single country setting.
 
 ```tsx
@@ -27,6 +27,20 @@ type SupportedGlobeProps = {
   }[];
 };
 ```
+
+`simulatedActivity` adds up to four anonymous pings at configured countries, chosen
+by a deterministic hash of time (`globe-activity.ts`) and spread across currencies so
+the euro area does not dominate. It is never live data: the figure carries the visible
+caption "Pings are simulated, not live activity." and the screen-reader description
+says the same. Pings and the caption are off under reduced motion. The landing uses
+`showRoutes={false} simulatedActivity`; routes remain available for other surfaces.
+
+Countries without a `markerTone` light up: their land dots are tinted with
+`--globe-route` in the WebGL pass, using the per-dot country codes in
+`globe-land-countries.json`. Hovering (mouse), tapping or focusing a country brightens
+its dots and expands the readout with what the region config offers there: the
+balance currency symbol and the candidate local asset with its verification status.
+Issuer names are not shown.
 
 `countries` is for an explicitly scoped presentation roster; omit it for the logged-out
 landing. Unknown codes are not plotted at invented coordinates. `className` can

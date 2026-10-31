@@ -1,6 +1,6 @@
 .globe {
   --globe-ink: #17191d;
-  --globe-route: #0000ff;
+  --globe-route: var(--primary);
   --globe-secondary-ink: #59616d;
   --globe-neutral: #737373;
   width: 100%;
@@ -120,8 +120,8 @@
 
 .activity {
   z-index: 1;
+  overflow: visible;
   pointer-events: none;
-  clip-path: circle(48% at 50% 50%);
 }
 
 .pingRing {
@@ -348,4 +348,11 @@
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+@media (pointer: coarse) {
+  .countryTarget {
+    width: 44px;
+    height: 44px;
+  }
 }

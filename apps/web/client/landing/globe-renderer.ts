@@ -314,11 +314,8 @@ export function createGlobeRenderer(
     gl.clearColor(0, 0, 0, 0);
 
     function setColor(uniform: WebGLUniformLocation | null, token: string, style: CSSStyleDeclaration) {
-      const raw = style.getPropertyValue(token).trim();
-      const color = /^#[\da-f]{3}$/i.test(raw) ? `#${raw[1]}${raw[1]}${raw[2]}${raw[2]}${raw[3]}${raw[3]}` : raw;
-      if (!/^#[\da-f]{6}$/i.test(color)) return;
-      const value = Number.parseInt(color.slice(1), 16);
-      gl!.uniform3f(uniform, (value >> 16 & 255) / 255, (value >> 8 & 255) / 255, (value & 255) / 255);
+      const rgb = resolveColor(style.getPropertyValue(token).trim());
+      if (rgb) gl!.uniform3f(uniform, rgb[0] / 255, rgb[1] / 255, rgb[2] / 255);
     }
 
     draw = () => {
@@ -453,4 +450,22 @@ function sampleTween({ from, to, start, duration }: Tween, time: number) {
   const progress = Math.max(0, (time - start) / duration);
   const eased = 1 - Math.pow(1 - progress, 3);
   return from + (to - from) * eased;
+}
+
+let colorContext: CanvasRenderingContext2D | null | undefined;
+
+function resolveColor(color: string): readonly [number, number, number] | null {
+  if (!color) return null;
+  if (/^#[\da-f]{6}$/i.test(color)) {
+    const value = Number.parseInt(color.slice(1), 16);
+    return [value >> 16 & 255, value >> 8 & 255, value & 255];
+  }
+  colorContext ??= document.createElement("canvas").getContext("2d", { willReadFrequently: true });
+  if (!colorContext) return null;
+  colorContext.clearRect(0, 0, 1, 1);
+  colorContext.fillStyle = "#000";
+  colorContext.fillStyle = color;
+  colorContext.fillRect(0, 0, 1, 1);
+  const [red, green, blue, alpha] = colorContext.getImageData(0, 0, 1, 1).data;
+  return alpha ? [red!, green!, blue!] : null;
 }

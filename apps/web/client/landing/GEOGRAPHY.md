@@ -26,6 +26,12 @@ the React component overlays current profile markers in both static and WebGL mo
 The static fallback paints the sphere and land dots from the `--globe-sphere-*` and
 `--globe-land` theme tokens, so it follows the resolved light or dark appearance.
 
+`globe-land-countries.json` is one string with a two-letter `ISO_A2_EH` code per
+land dot, in the same order as `globe-land-points.json` (`--` where no country polygon
+contains the dot or a point 0.6° away). 7,612 of 7,623 dots are assigned. Small
+countries such as Malta, Singapore, Cyprus and Luxembourg have no dots at this scale
+and rely on their marker.
+
 `globe-country-coordinates.json` contains 239 Natural Earth alpha-2 label points.
 Main countries take precedence over dependencies sharing a code (notably mainland
 France, Brazil, Australia, and Kazakhstan). These are cartographic label positions,
