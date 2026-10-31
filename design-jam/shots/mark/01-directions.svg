@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800">
+  <rect width="1280" height="800" fill="#f5f5f5"/>
+  <text x="40" y="56" font-size="22" font-weight="600" fill="#0a0a0a" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">Home mark, eight directions</text>
+  <text x="40" y="84" font-size="13" fill="#737373" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">Each at 96, 32, 24 and 16 px on light, then 32 and 16 px on the dark header. 24 unit grid, 2.4 corner radius.</text>
+  
+  <g>
+    <rect x="40" y="120" width="280" height="300" rx="8" fill="#ffffff" stroke="#e5e5e5"/>
+    <text x="60" y="144" font-size="13" font-weight="600" fill="#0a0a0a" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">A  Square</text>
+    <g transform="translate(60 164) scale(4)"><path fill="#002EF4" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0Z"/></g>
+    <g transform="translate(176 228) scale(1.3333333333333333)"><path fill="#002EF4" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0Z"/></g>
+    <g transform="translate(220 236) scale(1)"><path fill="#002EF4" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0Z"/></g>
+    <g transform="translate(256 244) scale(0.6666666666666666)"><path fill="#002EF4" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0Z"/></g>
+    <rect x="60" y="280" width="240" height="56" rx="6" fill="#171717"/>
+    <g transform="translate(76 292) scale(1.3333333333333333)"><path fill="#578BFA" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0Z"/></g>
+    <g transform="translate(124 300) scale(0.6666666666666666)"><path fill="#578BFA" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0Z"/></g>
+    <text x="156" y="313" font-size="11" fill="#a3a3a3" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">Dark, #578BFA</text>
+    <foreignObject x="60" y="348" width="240" height="60"><div xmlns="http://www.w3.org/1999/xhtml" style="font: 12px/1.45 ui-sans-serif, system-ui, sans-serif; color: #525252;">Current. Base square, nothing added.</div></foreignObject>
+  </g>
+  <g>
+    <rect x="340" y="120" width="280" height="300" rx="8" fill="#ffffff" stroke="#e5e5e5"/>
+    <text x="360" y="144" font-size="13" font-weight="600" fill="#0a0a0a" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">B  Doorway</text><text x="600" y="144" text-anchor="end" font-size="12" fill="#0a0a0a" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">Picked</text>
+    <g transform="translate(360 164) scale(4)"><path fill="#002EF4" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H14.4V14.4A2.4 2.4 0 0 0 9.6 14.4V24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0Z"/></g>
+    <g transform="translate(476 228) scale(1.3333333333333333)"><path fill="#002EF4" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H14.4V14.4A2.4 2.4 0 0 0 9.6 14.4V24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0Z"/></g>
+    <g transform="translate(520 236) scale(1)"><path fill="#002EF4" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H14.4V14.4A2.4 2.4 0 0 0 9.6 14.4V24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0Z"/></g>
+    <g transform="translate(556 244) scale(0.6666666666666666)"><path fill="#002EF4" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H14.4V14.4A2.4 2.4 0 0 0 9.6 14.4V24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0Z"/></g>
+    <rect x="360" y="280" width="240" height="56" rx="6" fill="#171717"/>
+    <g transform="translate(376 292) scale(1.3333333333333333)"><path fill="#578BFA" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H14.4V14.4A2.4 2.4 0 0 0 9.6 14.4V24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0Z"/></g>
+    <g transform="translate(424 300) scale(0.6666666666666666)"><path fill="#578BFA" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H14.4V14.4A2.4 2.4 0 0 0 9.6 14.4V24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0Z"/></g>
+    <text x="456" y="313" font-size="11" fill="#a3a3a3" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">Dark, #578BFA</text>
+    <foreignObject x="360" y="348" width="240" height="60"><div xmlns="http://www.w3.org/1999/xhtml" style="font: 12px/1.45 ui-sans-serif, system-ui, sans-serif; color: #525252;">Arched door cut from the base. It is also the counter of the h.</div></foreignObject>
+  </g>
+  <g>
+    <rect x="640" y="120" width="280" height="300" rx="8" fill="#ffffff" stroke="#e5e5e5"/>
+    <text x="660" y="144" font-size="13" font-weight="600" fill="#0a0a0a" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">C  Ascender</text><text x="900" y="144" text-anchor="end" font-size="12" fill="#737373" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">Runner-up</text>
+    <g transform="translate(660 164) scale(4)"><path fill="#002EF4" d="M4.9 0H8.9A1.4 1.4 0 0 1 10.3 1.4V6.9H19.1A1.4 1.4 0 0 1 20.5 8.3V22.6A1.4 1.4 0 0 1 19.1 24H4.9A1.4 1.4 0 0 1 3.5 22.6V1.4A1.4 1.4 0 0 1 4.9 0Z"/></g>
+    <g transform="translate(776 228) scale(1.3333333333333333)"><path fill="#002EF4" d="M4.9 0H8.9A1.4 1.4 0 0 1 10.3 1.4V6.9H19.1A1.4 1.4 0 0 1 20.5 8.3V22.6A1.4 1.4 0 0 1 19.1 24H4.9A1.4 1.4 0 0 1 3.5 22.6V1.4A1.4 1.4 0 0 1 4.9 0Z"/></g>
+    <g transform="translate(820 236) scale(1)"><path fill="#002EF4" d="M4.9 0H8.9A1.4 1.4 0 0 1 10.3 1.4V6.9H19.1A1.4 1.4 0 0 1 20.5 8.3V22.6A1.4 1.4 0 0 1 19.1 24H4.9A1.4 1.4 0 0 1 3.5 22.6V1.4A1.4 1.4 0 0 1 4.9 0Z"/></g>
+    <g transform="translate(856 244) scale(0.6666666666666666)"><path fill="#002EF4" d="M4.9 0H8.9A1.4 1.4 0 0 1 10.3 1.4V6.9H19.1A1.4 1.4 0 0 1 20.5 8.3V22.6A1.4 1.4 0 0 1 19.1 24H4.9A1.4 1.4 0 0 1 3.5 22.6V1.4A1.4 1.4 0 0 1 4.9 0Z"/></g>
+    <rect x="660" y="280" width="240" height="56" rx="6" fill="#171717"/>
+    <g transform="translate(676 292) scale(1.3333333333333333)"><path fill="#578BFA" d="M4.9 0H8.9A1.4 1.4 0 0 1 10.3 1.4V6.9H19.1A1.4 1.4 0 0 1 20.5 8.3V22.6A1.4 1.4 0 0 1 19.1 24H4.9A1.4 1.4 0 0 1 3.5 22.6V1.4A1.4 1.4 0 0 1 4.9 0Z"/></g>
+    <g transform="translate(724 300) scale(0.6666666666666666)"><path fill="#578BFA" d="M4.9 0H8.9A1.4 1.4 0 0 1 10.3 1.4V6.9H19.1A1.4 1.4 0 0 1 20.5 8.3V22.6A1.4 1.4 0 0 1 19.1 24H4.9A1.4 1.4 0 0 1 3.5 22.6V1.4A1.4 1.4 0 0 1 4.9 0Z"/></g>
+    <text x="756" y="313" font-size="11" fill="#a3a3a3" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">Dark, #578BFA</text>
+    <foreignObject x="660" y="348" width="240" height="60"><div xmlns="http://www.w3.org/1999/xhtml" style="font: 12px/1.45 ui-sans-serif, system-ui, sans-serif; color: #525252;">The first frame of the hover: the square grows an h stem.</div></foreignObject>
+  </g>
+  <g>
+    <rect x="940" y="120" width="280" height="300" rx="8" fill="#ffffff" stroke="#e5e5e5"/>
+    <text x="960" y="144" font-size="13" font-weight="600" fill="#0a0a0a" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">D  Gable</text>
+    <g transform="translate(960 164) scale(4)"><path fill="#002EF4" d="M12 0.6L23.1 8.6A2.2 2.2 0 0 1 24 10.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V10.4A2.2 2.2 0 0 1 0.9 8.6Z"/></g>
+    <g transform="translate(1076 228) scale(1.3333333333333333)"><path fill="#002EF4" d="M12 0.6L23.1 8.6A2.2 2.2 0 0 1 24 10.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V10.4A2.2 2.2 0 0 1 0.9 8.6Z"/></g>
+    <g transform="translate(1120 236) scale(1)"><path fill="#002EF4" d="M12 0.6L23.1 8.6A2.2 2.2 0 0 1 24 10.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V10.4A2.2 2.2 0 0 1 0.9 8.6Z"/></g>
+    <g transform="translate(1156 244) scale(0.6666666666666666)"><path fill="#002EF4" d="M12 0.6L23.1 8.6A2.2 2.2 0 0 1 24 10.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V10.4A2.2 2.2 0 0 1 0.9 8.6Z"/></g>
+    <rect x="960" y="280" width="240" height="56" rx="6" fill="#171717"/>
+    <g transform="translate(976 292) scale(1.3333333333333333)"><path fill="#578BFA" d="M12 0.6L23.1 8.6A2.2 2.2 0 0 1 24 10.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V10.4A2.2 2.2 0 0 1 0.9 8.6Z"/></g>
+    <g transform="translate(1024 300) scale(0.6666666666666666)"><path fill="#578BFA" d="M12 0.6L23.1 8.6A2.2 2.2 0 0 1 24 10.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V10.4A2.2 2.2 0 0 1 0.9 8.6Z"/></g>
+    <text x="1056" y="313" font-size="11" fill="#a3a3a3" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">Dark, #578BFA</text>
+    <foreignObject x="960" y="348" width="240" height="60"><div xmlns="http://www.w3.org/1999/xhtml" style="font: 12px/1.45 ui-sans-serif, system-ui, sans-serif; color: #525252;">Pitched roof on the square. Reads as house, loses Base.</div></foreignObject>
+  </g>
+  <g>
+    <rect x="40" y="440" width="280" height="300" rx="8" fill="#ffffff" stroke="#e5e5e5"/>
+    <text x="60" y="464" font-size="13" font-weight="600" fill="#0a0a0a" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">E  Window</text>
+    <g transform="translate(60 484) scale(4)"><path fill="#002EF4" fill-rule="evenodd" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0ZM14.4 4.8H19.2V9.6H14.4Z"/></g>
+    <g transform="translate(176 548) scale(1.3333333333333333)"><path fill="#002EF4" fill-rule="evenodd" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0ZM14.4 4.8H19.2V9.6H14.4Z"/></g>
+    <g transform="translate(220 556) scale(1)"><path fill="#002EF4" fill-rule="evenodd" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0ZM14.4 4.8H19.2V9.6H14.4Z"/></g>
+    <g transform="translate(256 564) scale(0.6666666666666666)"><path fill="#002EF4" fill-rule="evenodd" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0ZM14.4 4.8H19.2V9.6H14.4Z"/></g>
+    <rect x="60" y="600" width="240" height="56" rx="6" fill="#171717"/>
+    <g transform="translate(76 612) scale(1.3333333333333333)"><path fill="#578BFA" fill-rule="evenodd" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0ZM14.4 4.8H19.2V9.6H14.4Z"/></g>
+    <g transform="translate(124 620) scale(0.6666666666666666)"><path fill="#578BFA" fill-rule="evenodd" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0ZM14.4 4.8H19.2V9.6H14.4Z"/></g>
+    <text x="156" y="633" font-size="11" fill="#a3a3a3" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">Dark, #578BFA</text>
+    <foreignObject x="60" y="668" width="240" height="60"><div xmlns="http://www.w3.org/1999/xhtml" style="font: 12px/1.45 ui-sans-serif, system-ui, sans-serif; color: #525252;">One lit window, top right. Gets lost under 24px.</div></foreignObject>
+  </g>
+  <g>
+    <rect x="340" y="440" width="280" height="300" rx="8" fill="#ffffff" stroke="#e5e5e5"/>
+    <text x="360" y="464" font-size="13" font-weight="600" fill="#0a0a0a" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">F  Pixel h</text>
+    <g transform="translate(360 484) scale(4)"><g fill="#002EF4"><rect x="0.00" y="0.00" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="4.90" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="4.90" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="9.80" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="14.70" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="14.70" width="4.4" height="4.4" rx="0.6"/><rect x="19.60" y="14.70" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="19.60" width="4.4" height="4.4" rx="0.6"/><rect x="19.60" y="19.60" width="4.4" height="4.4" rx="0.6"/></g></g>
+    <g transform="translate(476 548) scale(1.3333333333333333)"><g fill="#002EF4"><rect x="0.00" y="0.00" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="4.90" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="4.90" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="9.80" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="14.70" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="14.70" width="4.4" height="4.4" rx="0.6"/><rect x="19.60" y="14.70" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="19.60" width="4.4" height="4.4" rx="0.6"/><rect x="19.60" y="19.60" width="4.4" height="4.4" rx="0.6"/></g></g>
+    <g transform="translate(520 556) scale(1)"><g fill="#002EF4"><rect x="0.00" y="0.00" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="4.90" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="4.90" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="9.80" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="14.70" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="14.70" width="4.4" height="4.4" rx="0.6"/><rect x="19.60" y="14.70" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="19.60" width="4.4" height="4.4" rx="0.6"/><rect x="19.60" y="19.60" width="4.4" height="4.4" rx="0.6"/></g></g>
+    <g transform="translate(556 564) scale(0.6666666666666666)"><g fill="#002EF4"><rect x="0.00" y="0.00" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="4.90" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="4.90" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="9.80" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="14.70" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="14.70" width="4.4" height="4.4" rx="0.6"/><rect x="19.60" y="14.70" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="19.60" width="4.4" height="4.4" rx="0.6"/><rect x="19.60" y="19.60" width="4.4" height="4.4" rx="0.6"/></g></g>
+    <rect x="360" y="600" width="240" height="56" rx="6" fill="#171717"/>
+    <g transform="translate(376 612) scale(1.3333333333333333)"><g fill="#578BFA"><rect x="0.00" y="0.00" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="4.90" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="4.90" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="9.80" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="14.70" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="14.70" width="4.4" height="4.4" rx="0.6"/><rect x="19.60" y="14.70" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="19.60" width="4.4" height="4.4" rx="0.6"/><rect x="19.60" y="19.60" width="4.4" height="4.4" rx="0.6"/></g></g>
+    <g transform="translate(424 620) scale(0.6666666666666666)"><g fill="#578BFA"><rect x="0.00" y="0.00" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="4.90" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="4.90" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="9.80" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="14.70" y="9.80" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="14.70" width="4.4" height="4.4" rx="0.6"/><rect x="19.60" y="14.70" width="4.4" height="4.4" rx="0.6"/><rect x="0.00" y="19.60" width="4.4" height="4.4" rx="0.6"/><rect x="19.60" y="19.60" width="4.4" height="4.4" rx="0.6"/></g></g>
+    <text x="456" y="633" font-size="11" fill="#a3a3a3" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">Dark, #578BFA</text>
+    <foreignObject x="360" y="668" width="240" height="60"><div xmlns="http://www.w3.org/1999/xhtml" style="font: 12px/1.45 ui-sans-serif, system-ui, sans-serif; color: #525252;">The Doto grid from the hover, frozen as an h.</div></foreignObject>
+  </g>
+  <g>
+    <rect x="640" y="440" width="280" height="300" rx="8" fill="#ffffff" stroke="#e5e5e5"/>
+    <text x="660" y="464" font-size="13" font-weight="600" fill="#0a0a0a" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">G  Chimney</text>
+    <g transform="translate(660 484) scale(4)"><path fill="#002EF4" d="M2.4 6H15.6V2A1.2 1.2 0 0 1 16.8 0.8H19.6A1.2 1.2 0 0 1 20.8 2V6H21.6A2.4 2.4 0 0 1 24 8.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V8.4A2.4 2.4 0 0 1 2.4 6Z"/></g>
+    <g transform="translate(776 548) scale(1.3333333333333333)"><path fill="#002EF4" d="M2.4 6H15.6V2A1.2 1.2 0 0 1 16.8 0.8H19.6A1.2 1.2 0 0 1 20.8 2V6H21.6A2.4 2.4 0 0 1 24 8.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V8.4A2.4 2.4 0 0 1 2.4 6Z"/></g>
+    <g transform="translate(820 556) scale(1)"><path fill="#002EF4" d="M2.4 6H15.6V2A1.2 1.2 0 0 1 16.8 0.8H19.6A1.2 1.2 0 0 1 20.8 2V6H21.6A2.4 2.4 0 0 1 24 8.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V8.4A2.4 2.4 0 0 1 2.4 6Z"/></g>
+    <g transform="translate(856 564) scale(0.6666666666666666)"><path fill="#002EF4" d="M2.4 6H15.6V2A1.2 1.2 0 0 1 16.8 0.8H19.6A1.2 1.2 0 0 1 20.8 2V6H21.6A2.4 2.4 0 0 1 24 8.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V8.4A2.4 2.4 0 0 1 2.4 6Z"/></g>
+    <rect x="660" y="600" width="240" height="56" rx="6" fill="#171717"/>
+    <g transform="translate(676 612) scale(1.3333333333333333)"><path fill="#578BFA" d="M2.4 6H15.6V2A1.2 1.2 0 0 1 16.8 0.8H19.6A1.2 1.2 0 0 1 20.8 2V6H21.6A2.4 2.4 0 0 1 24 8.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V8.4A2.4 2.4 0 0 1 2.4 6Z"/></g>
+    <g transform="translate(724 620) scale(0.6666666666666666)"><path fill="#578BFA" d="M2.4 6H15.6V2A1.2 1.2 0 0 1 16.8 0.8H19.6A1.2 1.2 0 0 1 20.8 2V6H21.6A2.4 2.4 0 0 1 24 8.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V8.4A2.4 2.4 0 0 1 2.4 6Z"/></g>
+    <text x="756" y="633" font-size="11" fill="#a3a3a3" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">Dark, #578BFA</text>
+    <foreignObject x="660" y="668" width="240" height="60"><div xmlns="http://www.w3.org/1999/xhtml" style="font: 12px/1.45 ui-sans-serif, system-ui, sans-serif; color: #525252;">Square with a chimney block. Cute, but a clip-art cue.</div></foreignObject>
+  </g>
+  <g>
+    <rect x="940" y="440" width="280" height="300" rx="8" fill="#ffffff" stroke="#e5e5e5"/>
+    <text x="960" y="464" font-size="13" font-weight="600" fill="#0a0a0a" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">H  Keyhole</text>
+    <g transform="translate(960 484) scale(4)"><path fill="#002EF4" fill-rule="evenodd" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0ZM12 7.2A3 3 0 0 1 13.5 12.8L14.4 18H9.6L10.5 12.8A3 3 0 0 1 12 7.2Z"/></g>
+    <g transform="translate(1076 548) scale(1.3333333333333333)"><path fill="#002EF4" fill-rule="evenodd" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0ZM12 7.2A3 3 0 0 1 13.5 12.8L14.4 18H9.6L10.5 12.8A3 3 0 0 1 12 7.2Z"/></g>
+    <g transform="translate(1120 556) scale(1)"><path fill="#002EF4" fill-rule="evenodd" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0ZM12 7.2A3 3 0 0 1 13.5 12.8L14.4 18H9.6L10.5 12.8A3 3 0 0 1 12 7.2Z"/></g>
+    <g transform="translate(1156 564) scale(0.6666666666666666)"><path fill="#002EF4" fill-rule="evenodd" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0ZM12 7.2A3 3 0 0 1 13.5 12.8L14.4 18H9.6L10.5 12.8A3 3 0 0 1 12 7.2Z"/></g>
+    <rect x="960" y="600" width="240" height="56" rx="6" fill="#171717"/>
+    <g transform="translate(976 612) scale(1.3333333333333333)"><path fill="#578BFA" fill-rule="evenodd" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0ZM12 7.2A3 3 0 0 1 13.5 12.8L14.4 18H9.6L10.5 12.8A3 3 0 0 1 12 7.2Z"/></g>
+    <g transform="translate(1024 620) scale(0.6666666666666666)"><path fill="#578BFA" fill-rule="evenodd" d="M2.4 0H21.6A2.4 2.4 0 0 1 24 2.4V21.6A2.4 2.4 0 0 1 21.6 24H2.4A2.4 2.4 0 0 1 0 21.6V2.4A2.4 2.4 0 0 1 2.4 0ZM12 7.2A3 3 0 0 1 13.5 12.8L14.4 18H9.6L10.5 12.8A3 3 0 0 1 12 7.2Z"/></g>
+    <text x="1056" y="633" font-size="11" fill="#a3a3a3" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif">Dark, #578BFA</text>
+    <foreignObject x="960" y="668" width="240" height="60"><div xmlns="http://www.w3.org/1999/xhtml" style="font: 12px/1.45 ui-sans-serif, system-ui, sans-serif; color: #525252;">Security cue. Wrong idea for a money app's front door.</div></foreignObject>
+  </g>
+</svg>

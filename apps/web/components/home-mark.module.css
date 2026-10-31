@@ -47,6 +47,10 @@
   }
 }
 
+:global(.dark) .root {
+  --mark-blue: #578bfa;
+}
+
 .control {
   position: absolute;
   top: 0;
@@ -114,6 +118,7 @@
 
 .square:first-child {
   opacity: 1;
+  clip-path: path("M-20 -60H60V2.8H-20Z M0 0H28V28H16.8V16.8A2.8 2.8 0 0 0 11.2 16.8V28H0Z");
 }
 
 .ascender {
@@ -221,6 +226,7 @@
     height: 24px;
     border-radius: 2px;
     background: currentColor;
+    clip-path: path("M0 0H24V24H14.4V14.4A2.4 2.4 0 0 0 9.6 14.4V24H0Z");
     pointer-events: none;
   }
 }
