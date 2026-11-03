@@ -20,7 +20,7 @@ export function blockReason(proposal: AgentProposal, request: AgentRequest, incl
   return Number(proposal.usd) > left ? `Over today's limit. ${usd(Math.max(0, left))} left.` : null;
 }
 
-export function AgentReviewSheet({ open, request, onClose }: { open: boolean; request: AgentRequest; onClose: () => void }) {
+export function AgentReviewSheet({ open, request, onClose, onApproved }: { open: boolean; request: AgentRequest; onClose: () => void; onApproved?: () => void }) {
   const [off, setOff] = useState<string[]>([]);
   const { add } = useHomeToast(null);
   const blocked = Object.fromEntries(request.proposals.map((p) => [p.id, blockReason(p, request, request.proposals.filter((x) => !off.includes(x.id)))]));
@@ -29,6 +29,7 @@ export function AgentReviewSheet({ open, request, onClose }: { open: boolean; re
   const count = approved.length;
 
   function approve() {
+    onApproved?.();
     onClose();
     add({ message: `Approved ${count} ${count === 1 ? "trade" : "trades"}. ${request.agent} is placing ${count === 1 ? "it" : "them"}.`, tone: "neutral", role: "status" });
   }
