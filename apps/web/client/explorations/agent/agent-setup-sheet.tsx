@@ -8,7 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { ManagementFacts } from "@/components/management-facts";
 import { MoneyModal, MoneyModalBody, MoneyModalFooter, MoneyModalHeader } from "@/client/money-modal";
 import { useHomeToast } from "@/client/home/use-home-toast";
-import { DEFAULT_LIMITS, describeLimits, parseLimits, type AgentLimitSpec } from "./agent-limits";
+import { DEFAULT_LIMITS, parseLimits, type AgentLimitSpec } from "./agent-limits";
+import { planSpendPermission } from "./agent-onchain";
+import { fixtureAccount, fixtureExecutor, fixturePermissionStart } from "./agent-fixtures";
 
 export type AgentDraft = { name: string; goal: string; limits: AgentLimitSpec };
 
@@ -26,11 +28,14 @@ export function AgentSetupSheet({ open, initial, onClose, onSave }: {
   const ids = { name: useId(), goal: useId(), limits: useId(), read: useId() };
   const parsed = parseLimits(limitsText, initial?.limits ?? DEFAULT_LIMITS);
   const ready = name.trim() && goal.trim();
+  const plan = planSpendPermission(parsed.spec, { account: fixtureAccount, spender: fixtureExecutor, start: fixturePermissionStart });
+  const before = initial?.limits ? planSpendPermission(initial.limits, { account: fixtureAccount, spender: fixtureExecutor, start: fixturePermissionStart }).request : null;
+  const signs = !editing || before?.allowance !== plan.request?.allowance || before?.periodInDays !== plan.request?.periodInDays;
 
   function save() {
     onSave({ name: name.trim(), goal: goal.trim(), limits: parsed.spec });
     onClose();
-    add({ message: editing ? `Updated ${name.trim()}'s limits.` : `${name.trim()} is ready. It can't trade until you add money to its portfolio.`, tone: "neutral", role: "status" });
+    add({ message: signs ? `Signed. ${name.trim()} can spend ${plan.base[0][1].toLowerCase()}.` : `Updated ${name.trim()}'s limits.`, tone: "neutral", role: "status" });
   }
 
   return (
@@ -61,13 +66,18 @@ export function AgentSetupSheet({ open, initial, onClose, onSave }: {
           </div>
         ) : null}
 
-        <section aria-labelledby="agent-setup-limits" className="space-y-1">
-          <h3 id="agent-setup-limits" className="text-sm font-medium">What it can do</h3>
-          <ManagementFacts rows={describeLimits(parsed.spec)} />
-          <p className="text-sm text-muted-foreground">It trades only inside its own portfolio. It can never send money out of Home or change these limits.</p>
+        <section aria-labelledby="agent-setup-base" className="space-y-1">
+          <h3 id="agent-setup-base" className="text-sm font-medium">Held by Base</h3>
+          <ManagementFacts rows={plan.base} />
+          <p className="text-sm text-muted-foreground">You sign this once in your wallet, as a spend permission on Base. Nothing can spend past it, including Home.</p>
         </section>
+        {plan.home.length ? <section aria-labelledby="agent-setup-home" className="space-y-1">
+          <h3 id="agent-setup-home" className="text-sm font-medium">Held by Home</h3>
+          <ManagementFacts rows={plan.home} />
+          <p className="text-sm text-muted-foreground">Home checks these before every trade. The agent can&apos;t send money out of Home or change any limit.</p>
+        </section> : null}
       </MoneyModalBody>
-      <MoneyModalFooter primaryLabel={editing ? "Save limits" : "Add agent"} primaryDisabled={!ready} onPrimary={save} secondaryLabel="Cancel" onSecondary={onClose} />
+      <MoneyModalFooter primaryLabel={signs ? (editing ? "Save and sign" : "Add and sign") : "Save limits"} primaryDisabled={!ready} onPrimary={save} secondaryLabel="Cancel" onSecondary={onClose} />
     </MoneyModal>
   );
 }

@@ -77,3 +77,7 @@ export const fixtureActivity: AgentActivity[] = [
   { id: "a2", agent: "Rebalance agent", label: "Sold Ether", value: "$32.00", when: "2026-10-27T14:12:00.000Z", because: "Ether drifted to 23%. You asked for 20%." },
   { id: "a3", agent: "Weekly Bitcoin", label: "Bought Bitcoin", value: "$50.00", when: "2026-10-21T09:00:00.000Z", because: "Buy $50 of Bitcoin every Wednesday." },
 ];
+
+export const fixtureAccount = "0x1111111111111111111111111111111111111111" as const;
+export const fixtureExecutor = "0x2222222222222222222222222222222222222222" as const;
+export const fixturePermissionStart = new Date("2026-11-04T00:00:00.000Z");

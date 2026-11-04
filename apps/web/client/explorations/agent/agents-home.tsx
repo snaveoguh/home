@@ -31,7 +31,7 @@ export function AgentsHome({ agents: initialAgents = fixtureAgents, initialOpen 
 
   function pauseAll() {
     setAgents((list) => list.map((a) => (a.readOnly ? a : { ...a, paused: !allPaused })));
-    add({ message: allPaused ? "Agents resumed." : "All agents paused. They can't trade until you resume them.", tone: "neutral", role: "status" });
+    add({ message: allPaused ? "Agents resumed." : `All agents paused. ${trading.length} permissions revoked on Base.`, tone: "neutral", role: "status" });
   }
 
   return (
